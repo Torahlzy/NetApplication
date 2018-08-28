@@ -1,0 +1,5 @@
+- Google官方Android架构组件一共包括以下几个：
+    - LifeCycle ： 与Activity和Fragment的生命周期有关
+    - LiveData ：异步可订阅数据，也是生命周期感知……
+    - ViewModel ：视图数据持有模型，也是生命周期感知
+    - Room ：SQLite抽象层，用于简化SQLite数据存储

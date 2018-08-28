@@ -1,0 +1,23 @@
+package com.torahli.myapplication;
+
+/**
+ * 不同app配置不同，可变参数应该写到这里
+ */
+public class AppConfig {
+    /**
+     * todo 区分上架渠道
+     */
+    public static final String CHANNEL = "any";
+    /**
+     * logcat打印附加tag
+     */
+    public static final String TAG_APPEND = " torahlog";
+
+    public static final boolean debug = true;
+
+    public static final String UMENG_APP_KEY = "5b6ea00ef43e4852fc0000ef";
+    public static final String UMENG_PUSH_SECRET = "";
+    public static final String UMENG_CHANNEL = CHANNEL;
+
+    public static final boolean showLogcat = true;
+}
