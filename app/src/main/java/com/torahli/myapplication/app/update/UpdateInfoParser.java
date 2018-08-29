@@ -8,7 +8,6 @@ import com.torahli.myapplication.app.update.bean.UpdateInfo;
 public class UpdateInfoParser {
 
     public static UpdateInfo parser(String str){
-
         if (TextUtils.isEmpty(str)) {
             return null;
         }

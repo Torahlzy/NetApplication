@@ -43,8 +43,7 @@ public class CheckUpdateViewModel extends BaseViewModel {
                     public void onError(Throwable e) {
                         Tlog.printException("torahlog", e);
                         UpdateInfo value = new UpdateInfo();
-                        liveData.setValue(value.setError(NetErrorType.NetError, "报错" + e.getMessage()));
-
+                        liveData.setValue(value.setError(NetErrorType.NetError, "检查更新失败"));
                     }
 
                     @Override

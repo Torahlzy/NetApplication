@@ -20,6 +20,16 @@ public class UpdateInfo extends BaseLiveData implements DeProguard {
         String versionName;
         String url;
         String desc;
+
+        @Override
+        public String toString() {
+            return "Update{" +
+                    "versionCode=" + versionCode +
+                    ", versionName='" + versionName + '\'' +
+                    ", url='" + url + '\'' +
+                    ", desc='" + desc + '\'' +
+                    '}';
+        }
     }
 
     @Override

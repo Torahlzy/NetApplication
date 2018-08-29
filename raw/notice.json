@@ -1,8 +1,8 @@
 {
   "update": {
-    "versionCode": 1280,
+    "versionCode": 1000,
     "versionName": "1.2.8",
-    "url": "https://github.com/Torahlzy/NetApplication/blob/master/raw/test.apk",
-    "desc": "1.2.8 已更新!\n1.修复已知奔溃"
+    "url": "https://github.com/Torahlzy/NetApplication/raw/master/raw/NetApp.apk",
+    "desc": "1.00 已更新!\n1.修复已知奔溃"
   }
 }

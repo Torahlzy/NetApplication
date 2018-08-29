@@ -18,7 +18,7 @@ public class AppConfig {
     public static final String UMENG_APP_KEY = "5b6ea00ef43e4852fc0000ef";
     public static final String UMENG_PUSH_SECRET = "";
     public static final String UMENG_CHANNEL = CHANNEL;
-    public static final String CHECK_PDATE_JSON_URL = "https://github.com/Torahlzy/NetApplication/blob/master/raw/notice.json";
+    public static final String CHECK_PDATE_JSON_URL = "https://github.com/Torahlzy/NetApplication/raw/master/raw/notice.json";
 
     public static final boolean showLogcat = true;
 }
