@@ -1,6 +1,6 @@
 package com.torahli.myapplication.hkbc.topiclist.bean;
 
-import com.torahli.myapplication.framwork.bean.LiveDataBase;
+import com.torahli.myapplication.framwork.bean.BaseLiveData;
 import com.torahli.myapplication.framwork.bean.NetErrorType;
 import com.torahli.myapplication.hkbc.bean.Topic;
 
@@ -9,7 +9,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-public class TopicList extends LiveDataBase {
+public class TopicList extends BaseLiveData {
     @Nonnull
     private final List<Topic> topicList = new ArrayList<>();
 

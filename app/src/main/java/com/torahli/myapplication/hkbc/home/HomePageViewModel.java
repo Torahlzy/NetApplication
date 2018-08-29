@@ -6,7 +6,7 @@ import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.bean.NetErrorType;
 import com.torahli.myapplication.framwork.vm.BaseViewModel;
 import com.torahli.myapplication.hkbc.home.bean.HomePage;
-import com.torahli.myapplication.hkbc.net.HKBCProtocol;
+import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -27,7 +27,7 @@ public class HomePageViewModel extends BaseViewModel {
     }
 
     public void initData() {
-        HKBCProtocol.getHomePage()
+        HKBCProtocolUtil.getHomePage()
                 .map(new Function<String, HomePage>() {
                     @Override
                     public HomePage apply(String s) throws Exception {

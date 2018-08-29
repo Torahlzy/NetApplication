@@ -1,8 +1,8 @@
 package com.torahli.myapplication.hkbc.login.bean;
 
-import com.torahli.myapplication.framwork.bean.LiveDataBase;
+import com.torahli.myapplication.framwork.bean.BaseLiveData;
 
-public class LoginResult extends LiveDataBase {
+public class LoginResult extends BaseLiveData {
     private boolean succeed ;
     private String loginMsg ;
 

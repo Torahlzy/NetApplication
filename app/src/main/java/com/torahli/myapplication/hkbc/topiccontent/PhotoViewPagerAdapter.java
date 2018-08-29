@@ -14,7 +14,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.torahli.myapplication.R;
-import com.torahli.myapplication.hkbc.net.HKBCProtocol;
+import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +73,7 @@ public class PhotoViewPagerAdapter extends PagerAdapter {
         container.addView(pagerPhotoView);
         final PhotoView photoView = pagerPhotoView.findViewById(R.id.photoview_photo);
         final NumberProgressBar progressBar = pagerPhotoView.findViewById(R.id.pb_photo_load_progress);
-        String url = HKBCProtocol.getWholeUrl(mData.get(position));
+        String url = HKBCProtocolUtil.getWholeUrl(mData.get(position));
         // Glide 下载监听
         ProgressManager.getInstance().addResponseListener(url, new ProgressListener() {
             @Override

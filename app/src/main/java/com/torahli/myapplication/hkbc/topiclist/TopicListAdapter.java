@@ -14,7 +14,7 @@ import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.fragment.BaseFragment;
 import com.torahli.myapplication.framwork.util.SystemUtil;
 import com.torahli.myapplication.hkbc.bean.Topic;
-import com.torahli.myapplication.hkbc.net.HKBCProtocol;
+import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 import com.torahli.myapplication.hkbc.topiccontent.TopicContentActivity;
 
 public class TopicListAdapter extends BaseQuickAdapter<Topic, BaseViewHolder> {
@@ -48,7 +48,7 @@ public class TopicListAdapter extends BaseQuickAdapter<Topic, BaseViewHolder> {
         img.setLayoutParams(layoutParams);
         TextView tv = helper.getView(R.id.topic_list_item_tv);
         GlideApp.with(fragment)
-                .load(HKBCProtocol.getWholeUrl(item.getPicUrl()))
+                .load(HKBCProtocolUtil.getWholeUrl(item.getPicUrl()))
                 .error(R.drawable.ic_common_fail_svg)
                 .into(img);
         tv.setText(item.getTitle());

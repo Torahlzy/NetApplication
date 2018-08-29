@@ -1,6 +1,7 @@
 package com.torahli.myapplication.hkbc.net;
 
 import com.torahli.myapplication.framwork.retrofit.MyRetrofit;
+import com.torahli.myapplication.framwork.util.ProtocolUtil;
 
 import java.util.Map;
 
@@ -10,7 +11,7 @@ import retrofit2.http.FieldMap;
 /**
  * 比思网络协议
  */
-public class HKBCProtocol {
+public class HKBCProtocolUtil extends ProtocolUtil {
     public static final String BASEURL = "http://hkbbcc.xyz/";
 
     /**
@@ -60,7 +61,13 @@ public class HKBCProtocol {
     }
 
 
-
+    /**
+     * 拼凑地址
+     * 因为有些地址不带域名
+     * todo 检查域名是否正确
+     * @param url
+     * @return
+     */
     public static String getWholeUrl(String url) {
         if (url == null) {
             return null;

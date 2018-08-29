@@ -21,7 +21,7 @@ import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.util.SystemUtil;
 import com.torahli.myapplication.hkbc.bean.Topic;
 import com.torahli.myapplication.hkbc.home.bean.Banners;
-import com.torahli.myapplication.hkbc.net.HKBCProtocol;
+import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 import com.torahli.myapplication.hkbc.support.BannerGlideImageLoader;
 import com.torahli.myapplication.hkbc.topiccontent.TopicContentActivity;
 import com.torahli.myapplication.hkbc.topiclist.TopiclistActivity;
@@ -185,7 +185,7 @@ public class HomeAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, Base
             cover.setVisibility(View.GONE);
         } else {
             cover.setVisibility(View.VISIBLE);
-            fragmentGlide.load(HKBCProtocol.getWholeUrl(topic.getPicUrl())).into(new DrawableImageViewTarget(cover) {
+            fragmentGlide.load(HKBCProtocolUtil.getWholeUrl(topic.getPicUrl())).into(new DrawableImageViewTarget(cover) {
                 @Override
                 public void onLoadFailed(@Nullable Drawable errorDrawable) {
                     super.onLoadFailed(errorDrawable);

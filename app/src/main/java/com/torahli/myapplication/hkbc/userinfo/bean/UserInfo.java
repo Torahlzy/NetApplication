@@ -2,12 +2,12 @@ package com.torahli.myapplication.hkbc.userinfo.bean;
 
 import android.text.TextUtils;
 
-import com.torahli.myapplication.framwork.bean.LiveDataBase;
+import com.torahli.myapplication.framwork.bean.BaseLiveData;
 
 /**
  * 用户登录状态
  */
-public class UserInfo extends LiveDataBase {
+public class UserInfo extends BaseLiveData {
     String userName;
     String userHeadUrl;
     boolean hasLogin;

@@ -1,7 +1,9 @@
 package com.torahli.myapplication.hkbc;
 
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
@@ -20,16 +22,18 @@ import android.widget.TextView;
 
 import com.torahli.myapplication.R;
 import com.torahli.myapplication.R.id;
+import com.torahli.myapplication.app.update.CheckUpdateViewModel;
+import com.torahli.myapplication.app.update.bean.UpdateInfo;
 import com.torahli.myapplication.framwork.GlideApp;
+import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
 import com.torahli.myapplication.hkbc.home.HomePageFragment;
 import com.torahli.myapplication.hkbc.login.LoginActivity;
-import com.torahli.myapplication.hkbc.net.HKBCProtocol;
+import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 import com.torahli.myapplication.hkbc.userinfo.UserInfoManager;
 import com.torahli.myapplication.hkbc.userinfo.bean.UserInfo;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -41,6 +45,9 @@ import java.lang.annotation.RetentionPolicy;
  */
 public class MainActivity extends BaseActivity
         implements OnNavigationItemSelectedListener {
+
+    private CheckUpdateViewModel checkUpdateViewModel;
+
     /**
      * fragment的tag
      */
@@ -61,6 +68,20 @@ public class MainActivity extends BaseActivity
         initView();
         initHome();
         initNaviView();
+        initData();
+    }
+
+    private void initData() {
+        checkUpdateViewModel = ViewModelProviders.of(this).get(CheckUpdateViewModel.class);
+        checkUpdateViewModel.getContentLiveData().observe(this, new Observer<UpdateInfo>() {
+            @Override
+            public void onChanged(@Nullable UpdateInfo updateInfo) {
+                if (Tlog.isShowLogCat()) {
+                    Tlog.d(TAG, "onChanged --- updateInfo:" + updateInfo);
+                }
+            }
+        });
+        checkUpdateViewModel.checkUpdate();
     }
 
     private void initView() {
@@ -101,7 +122,7 @@ public class MainActivity extends BaseActivity
                         if (userinfo != null && userinfo.isLogin()) {
                             userName.setText(userinfo.getUserName());
                             GlideApp.with(MainActivity.this)
-                                    .load(HKBCProtocol.getWholeUrl(userinfo.getUserHeadUrl()))
+                                    .load(HKBCProtocolUtil.getWholeUrl(userinfo.getUserHeadUrl()))
                                     .placeholder(R.drawable.ic_default_user)
                                     .error(R.drawable.ic_default_user)
                                     .circleCrop()

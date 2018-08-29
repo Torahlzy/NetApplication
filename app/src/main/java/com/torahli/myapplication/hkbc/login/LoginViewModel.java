@@ -6,7 +6,7 @@ import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.bean.NetErrorType;
 import com.torahli.myapplication.framwork.vm.BaseViewModel;
 import com.torahli.myapplication.hkbc.login.bean.LoginResult;
-import com.torahli.myapplication.hkbc.net.HKBCProtocol;
+import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class LoginViewModel extends BaseViewModel {
         params.put("password", password);
         params.put("quickforward", "yes");
         params.put("handlekey", "ls");
-        HKBCProtocol.getLogin(params).subscribeOn(Schedulers.io()).map(new Function<String, LoginResult>() {
+        HKBCProtocolUtil.getLogin(params).subscribeOn(Schedulers.io()).map(new Function<String, LoginResult>() {
             @Override
             public LoginResult apply(String s) throws Exception {
                 return LoginResultParser.parser(s);

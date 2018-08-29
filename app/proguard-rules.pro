@@ -43,6 +43,18 @@ public static final int *;
 
 # for DexGuard only
 -keepresourcexmlelements manifest/application/meta-data@value=GlideModule
-
+#gson
 -keep class me.jessyan.progressmanager.** { *; }
 -keep interface me.jessyan.progressmanager.** { *; }
+
+
+-keep public class com.google.gson.**
+-keep public class com.google.gson.** {public private protected *;}
+
+-keepattributes Signature
+-keepattributes *Annotation*
+#不要混淆DeProguard所有子类的属性与方法
+-keepclasseswithmembers class * implements com.torahli.myapplication.framwork.bean.DeProguard{
+    <fields>;
+    <methods>;
+}

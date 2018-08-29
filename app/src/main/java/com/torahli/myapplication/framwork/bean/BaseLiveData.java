@@ -1,6 +1,6 @@
 package com.torahli.myapplication.framwork.bean;
 
-public abstract class LiveDataBase {
+public abstract class BaseLiveData {
     protected void setNoError() {
         this.error = 0;
         this.errorMsg = null;
@@ -27,7 +27,7 @@ public abstract class LiveDataBase {
 
     @Override
     public String toString() {
-        return "LiveDataBase{" +
+        return "BaseLiveData{" +
                 "error=" + error +
                 ", errorMsg='" + errorMsg + '\'' +
                 '}';

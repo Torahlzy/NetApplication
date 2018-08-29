@@ -5,7 +5,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.torahli.myapplication.hkbc.bean.Topic;
-import com.torahli.myapplication.hkbc.net.HKBCProtocol;
+import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 import com.youth.banner.loader.ImageLoader;
 
 public class BannerGlideImageLoader extends ImageLoader {
@@ -24,6 +24,6 @@ public class BannerGlideImageLoader extends ImageLoader {
         } else {
             url = String.valueOf(path);
         }
-        Glide.with(context).load(HKBCProtocol.getWholeUrl(url)).into(imageView);
+        Glide.with(context).load(HKBCProtocolUtil.getWholeUrl(url)).into(imageView);
     }
 }

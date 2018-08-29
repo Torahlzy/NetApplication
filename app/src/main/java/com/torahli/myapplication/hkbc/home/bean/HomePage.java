@@ -1,7 +1,7 @@
 package com.torahli.myapplication.hkbc.home.bean;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
-import com.torahli.myapplication.framwork.bean.LiveDataBase;
+import com.torahli.myapplication.framwork.bean.BaseLiveData;
 import com.torahli.myapplication.framwork.bean.NetErrorType;
 import com.torahli.myapplication.hkbc.bean.Topic;
 
@@ -10,7 +10,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-public class HomePage extends LiveDataBase {
+public class HomePage extends BaseLiveData {
     @Nonnull
     private List<Topic> topicList = new ArrayList<>();
 

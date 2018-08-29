@@ -1,12 +1,11 @@
-package com.torahli.myapplication.hkbc.topiclist;
+package com.torahli.myapplication.app.update;
 
 import android.arch.lifecycle.MutableLiveData;
 
+import com.torahli.myapplication.app.update.bean.UpdateInfo;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.bean.NetErrorType;
 import com.torahli.myapplication.framwork.vm.BaseViewModel;
-import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
-import com.torahli.myapplication.hkbc.topiclist.bean.TopicList;
 
 import javax.annotation.Nonnull;
 
@@ -15,38 +14,37 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DefaultSubscriber;
 
-public class TopicListViewModel extends BaseViewModel {
+public class CheckUpdateViewModel extends BaseViewModel {
     @Nonnull
-    MutableLiveData<TopicList> liveData;
+    MutableLiveData<UpdateInfo> liveData;
 
-    public MutableLiveData<TopicList> getTopicListLiveData() {
+    public MutableLiveData<UpdateInfo> getContentLiveData() {
         if (liveData == null) {
             liveData = new MutableLiveData<>();
         }
         return liveData;
     }
 
-    public void initData(String url){
-        HKBCProtocolUtil.getTopicList(url)
-                .subscribeOn(Schedulers.io())
-                .map(new Function<String, TopicList>() {
+    public void checkUpdate() {
+        APPProtocolUtil.checkUpdate().subscribeOn(Schedulers.io())
+                .map(new Function<String, UpdateInfo>() {
                     @Override
-                    public TopicList apply(String s) throws Exception {
-                        return TopicListParser.parser(s);
+                    public UpdateInfo apply(String s) throws Exception {
+                        return UpdateInfoParser.parser(s);
                     }
                 }).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultSubscriber<TopicList>() {
-
+                .subscribe(new DefaultSubscriber<UpdateInfo>() {
                     @Override
-                    public void onNext(TopicList topicContent) {
-                        liveData.setValue(topicContent);
+                    public void onNext(UpdateInfo updateInfo) {
+                        liveData.setValue(updateInfo);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Tlog.printException("torahlog", e);
-                        TopicList value = new TopicList();
+                        UpdateInfo value = new UpdateInfo();
                         liveData.setValue(value.setError(NetErrorType.NetError, "报错" + e.getMessage()));
+
                     }
 
                     @Override

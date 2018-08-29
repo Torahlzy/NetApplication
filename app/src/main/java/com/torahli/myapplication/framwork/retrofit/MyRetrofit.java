@@ -2,6 +2,9 @@ package com.torahli.myapplication.framwork.retrofit;
 
 import com.torahli.myapplication.MainApplication;
 
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
@@ -11,7 +14,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
  */
 public class MyRetrofit {
 
-    private static Retrofit retrofit;
+    private static final HashMap<String, WeakReference<Retrofit>> retrofitMap = new HashMap<>();
 
     /**
      * 封装一下retrofit。
@@ -21,6 +24,12 @@ public class MyRetrofit {
      * @param baseUrl
      */
     public static Retrofit create(String baseUrl) {
+        WeakReference<Retrofit> wrRetrofit = retrofitMap.get(baseUrl);
+        Retrofit retrofit = null;
+        if (wrRetrofit != null) {
+            retrofit = wrRetrofit.get();
+        }
+
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(baseUrl)
@@ -28,7 +37,9 @@ public class MyRetrofit {
                     .addConverterFactory(ScalarsConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())  // 针对rxjava2.x
                     .build();
+            retrofitMap.put(baseUrl, new WeakReference<Retrofit>(retrofit));
         }
+
         return retrofit;
     }
 }

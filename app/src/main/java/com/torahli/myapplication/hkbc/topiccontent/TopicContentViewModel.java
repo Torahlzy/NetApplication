@@ -5,7 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.bean.NetErrorType;
 import com.torahli.myapplication.framwork.vm.BaseViewModel;
-import com.torahli.myapplication.hkbc.net.HKBCProtocol;
+import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 import com.torahli.myapplication.hkbc.topiccontent.bean.TopicContent;
 
 import javax.annotation.Nonnull;
@@ -28,7 +28,7 @@ public class TopicContentViewModel extends BaseViewModel {
 
 
     public void initData(String link) {
-        HKBCProtocol.getTopicContent(link)
+        HKBCProtocolUtil.getTopicContent(link)
                 .subscribeOn(Schedulers.io())
                 .map(new Function<String, TopicContent>() {
                     @Override

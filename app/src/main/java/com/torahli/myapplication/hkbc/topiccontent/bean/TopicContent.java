@@ -1,6 +1,6 @@
 package com.torahli.myapplication.hkbc.topiccontent.bean;
 
-import com.torahli.myapplication.framwork.bean.LiveDataBase;
+import com.torahli.myapplication.framwork.bean.BaseLiveData;
 import com.torahli.myapplication.framwork.bean.NetErrorType;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 /**
  * 主题详情页的解析结果
  */
-public class TopicContent extends LiveDataBase {
+public class TopicContent extends BaseLiveData {
     @Nonnull
     List<String> imgList = new ArrayList<>();
 
