@@ -1,5 +1,6 @@
 package com.torahli.myapplication.hkbc;
 
+import android.Manifest;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -19,11 +20,14 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.torahli.myapplication.R;
 import com.torahli.myapplication.R.id;
 import com.torahli.myapplication.app.update.CheckUpdateViewModel;
 import com.torahli.myapplication.app.update.bean.UpdateInfo;
+import com.torahli.myapplication.app.update.download.DownLoadAPKUtil;
 import com.torahli.myapplication.framwork.GlideApp;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
@@ -37,6 +41,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import io.reactivex.observers.DefaultObserver;
 
 /**
  * 主Activity
@@ -65,13 +71,38 @@ public class MainActivity extends BaseActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initPermission();
         initView();
         initHome();
         initNaviView();
-        initData();
     }
 
-    private void initData() {
+    private void initPermission() {
+        final RxPermissions rxPermissions = new RxPermissions(this);
+        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(new DefaultObserver<Boolean>() {
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (!aBoolean) {
+                            Toast.makeText(MainActivity.this, "无存储卡权限将不能自动升级", Toast.LENGTH_SHORT).show();
+                        } else {
+                            checkUpdate();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    private void checkUpdate() {
         checkUpdateViewModel = ViewModelProviders.of(this).get(CheckUpdateViewModel.class);
         checkUpdateViewModel.getContentLiveData().observe(this, new Observer<UpdateInfo>() {
             @Override
@@ -79,9 +110,28 @@ public class MainActivity extends BaseActivity
                 if (Tlog.isShowLogCat()) {
                     Tlog.d(TAG, "onChanged --- updateInfo:" + updateInfo);
                 }
+
+                if (updateInfo != null && updateInfo.isAvailable()) {
+                    UpdateInfo.Update update = updateInfo.getUpdate();
+                    judgeStartDownLoad(update);
+                } else {
+                    Toast.makeText(MainActivity.this, "检查更新失败", Toast.LENGTH_SHORT).show();
+                }
             }
         });
         checkUpdateViewModel.checkUpdate();
+    }
+
+    /**
+     * 提示用户可升级
+     *
+     * @param update
+     */
+    private void judgeStartDownLoad(UpdateInfo.Update update) {
+        //todo 对比版本
+        //todo 提示下载
+        //开始下载
+        new DownLoadAPKUtil().startDownLoad(update);
     }
 
     private void initView() {

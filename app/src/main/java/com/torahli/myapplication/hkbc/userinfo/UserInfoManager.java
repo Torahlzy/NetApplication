@@ -2,7 +2,6 @@ package com.torahli.myapplication.hkbc.userinfo;
 
 import android.arch.lifecycle.MutableLiveData;
 
-import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.hkbc.userinfo.bean.UserInfo;
 
 import javax.annotation.Nonnull;
@@ -30,9 +29,6 @@ public class UserInfoManager {
     }
 
     public UserInfoManager setUserinfo(String userName, String userHeadUrl) {
-        if (Tlog.isShowLogCat()) {
-            Tlog.d(TAG, "setUserinfo --- userName:" + userName + "\n userHeadUrl:" + userHeadUrl);
-        }
         userinfo.setUserInfo(userName, userHeadUrl);
         return this;
     }
@@ -42,9 +38,6 @@ public class UserInfoManager {
     }
 
     public UserInfoManager setUserDetail(String userDefen, String userGrade) {
-        if (Tlog.isShowLogCat()) {
-            Tlog.d(TAG, "setUserDetail --- userDefen:" + userDefen + "\n userGrade:" + userGrade);
-        }
         userinfo.setUserDetails(userDefen, userGrade);
         return this;
     }

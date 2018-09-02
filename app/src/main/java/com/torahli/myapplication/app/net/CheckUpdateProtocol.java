@@ -1,4 +1,4 @@
-package com.torahli.myapplication.app.update;
+package com.torahli.myapplication.app.net;
 
 import com.torahli.myapplication.AppConfig;
 

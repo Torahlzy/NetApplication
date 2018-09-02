@@ -3,6 +3,12 @@
     - []rxjava 内存泄漏
     - []优化登录体验
 - 当前紧急
-    - 自动检查更新
+    - doing:自动检查更新
+
 - 用到的开源框架
-    - https://github.com/daimajia/NumberProgressBar
+    - rxjava、retrofit、okHttp、ViewModel+LiveData
+        - retrofit教程 https://www.jianshu.com/p/308f3c54abdd
+        - okio教程 https://juejin.im/post/5856680c8e450a006c6474bd
+    - 带进度的进度条 https://github.com/daimajia/NumberProgressBar
+    - 各种dialog https://github.com/afollestad/material-dialogs/blob/master/README_OLD.md
+    - retrofit下载器 https://github.com/Tamicer/FastDownloader

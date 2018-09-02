@@ -46,7 +46,8 @@ public static final int *;
 #gson
 -keep class me.jessyan.progressmanager.** { *; }
 -keep interface me.jessyan.progressmanager.** { *; }
-
+#okio
+-dontwarn okio.**
 
 -keep public class com.google.gson.**
 -keep public class com.google.gson.** {public private protected *;}

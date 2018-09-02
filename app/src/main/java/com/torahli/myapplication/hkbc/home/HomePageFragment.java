@@ -69,7 +69,7 @@ public class HomePageFragment extends BaseFragment {
             @Override
             public void onChanged(@Nullable HomePage homePage) {
                 if (Tlog.isShowLogCat()) {
-                    Tlog.d(TAG, "onChanged --- homePage:" + homePage);
+                    Tlog.d(TAG, "首页更新 --- homePage:" + homePage);
                 }
                 refreshLayout.refreshComplete();
                 if (homePage == null || homePage.isError()) {

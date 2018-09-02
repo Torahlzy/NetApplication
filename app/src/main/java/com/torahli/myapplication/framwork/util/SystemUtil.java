@@ -2,9 +2,13 @@ package com.torahli.myapplication.framwork.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 
+import com.torahli.myapplication.AppConfig;
 import com.torahli.myapplication.MainApplication;
+
+import java.io.File;
 
 import javax.annotation.Nonnull;
 
@@ -35,6 +39,20 @@ public class SystemUtil {
         Context context = MainApplication.getApplication();
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
+    }
+
+    /**
+     * 获得sd卡的文件夹。
+     *
+     * @return 大概这样：/storage/emulated/0/{@link AppConfig.SDCARD_FOLDER}/
+     */
+    public static String getAPPSDCardPath() {
+        String path = null;
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            path = Environment.getExternalStorageDirectory().getPath() +
+                    File.separator + AppConfig.SDCARD_FOLDER + File.separator;
+        }
+        return path;
     }
 
 }
