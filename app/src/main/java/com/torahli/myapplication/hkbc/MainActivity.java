@@ -53,6 +53,9 @@ public class MainActivity extends BaseActivity
         implements OnNavigationItemSelectedListener {
 
     private CheckUpdateViewModel checkUpdateViewModel;
+    private View fab;
+    private boolean hasLogin;
+    private long preClickTimeMills;
 
     /**
      * fragment的tag
@@ -137,11 +140,11 @@ public class MainActivity extends BaseActivity
     private void initView() {
         Toolbar toolBar = (Toolbar) this.findViewById(id.toolbar);
         setSupportActionBar(toolBar);
-        findViewById(id.fab).setOnClickListener(new OnClickListener() {
+        fab = findViewById(id.fab);
+        fab.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(v, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                showTips("todo");
             }
         });
         drawer = (DrawerLayout) this.findViewById(id.drawer_layout);
@@ -162,7 +165,16 @@ public class MainActivity extends BaseActivity
         headImage.setOnClickListener((OnClickListener) (new OnClickListener() {
             @Override
             public final void onClick(View it) {
-                LoginActivity.startLoginActivity(MainActivity.this);
+                if (hasLogin) {
+                    if (System.currentTimeMillis() - preClickTimeMills < 500) {
+                        LoginActivity.startLoginActivity(MainActivity.this);
+                    } else {
+                        preClickTimeMills = System.currentTimeMillis();
+                        showToast("您已经登录，双击头像可以替换其他账号");
+                    }
+                } else {
+                    LoginActivity.startLoginActivity(MainActivity.this);
+                }
             }
         }));
         UserInfoManager.getInstance().getUserInfoLiveData()
@@ -170,6 +182,7 @@ public class MainActivity extends BaseActivity
                     @Override
                     public void onChanged(@Nullable UserInfo userinfo) {
                         if (userinfo != null && userinfo.isLogin()) {
+                            hasLogin = true;
                             userName.setText(userinfo.getUserName());
                             GlideApp.with(MainActivity.this)
                                     .load(HKBCProtocolUtil.getWholeUrl(userinfo.getUserHeadUrl()))
@@ -178,10 +191,13 @@ public class MainActivity extends BaseActivity
                                     .circleCrop()
                                     .into(headImage);
                             userContent.setText(userinfo.getUserDetails());
+                            showTips("欢迎回来，" + userinfo.getUserName());
                         } else {
+                            hasLogin = false;
                             userName.setText(R.string.myapp_name);
                             headImage.setImageResource(R.drawable.ic_default_user);
                             userContent.setText(R.string.app_login_tip);
+                            showTips("没有登录，部分帖子可能加载失败");
                         }
 
                     }
@@ -232,4 +248,9 @@ public class MainActivity extends BaseActivity
         return true;
     }
 
+    @Override
+    public void showTips(String msg) {
+        Snackbar.make(fab, msg, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+    }
 }

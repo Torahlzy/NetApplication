@@ -1,11 +1,11 @@
 # 一个针对特定论坛美化的“浏览器”APP
 - TODO
-    - []rxjava 内存泄漏
-    - []优化登录体验
+    - rxjava 内存泄漏
+    - 优化登录体验
         - 记录上次登录账号密码
     - 下一页
-- 当前紧急
-    - doing:自动检查更新
+        - 大图页图片预览，快速定位
+    - 自动检查更新测试
 # 开发规范
 - 区分dataBean和UIBean
     - UIBean可以添加用于界面提示的字段，比如网络结果。dataBean不能添加
@@ -19,3 +19,4 @@
     - 带进度的进度条 https://github.com/daimajia/NumberProgressBar
     - 各种dialog https://github.com/afollestad/material-dialogs/blob/master/README_OLD.md
     - retrofit下载器 https://github.com/Tamicer/FastDownloader
+    - Rx Preferences https://github.com/f2prateek/rx-preferences

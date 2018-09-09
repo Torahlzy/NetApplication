@@ -3,8 +3,8 @@ package com.torahli.myapplication.hkbc.login.bean;
 import com.torahli.myapplication.framwork.bean.BaseLiveData;
 
 public class LoginResult extends BaseLiveData {
-    private boolean succeed ;
-    private String loginMsg ;
+    private boolean succeed;
+    private String loginMsg;
 
     public LoginResult setError(int error, String msg) {
         setErrorAndMsg(error, msg);

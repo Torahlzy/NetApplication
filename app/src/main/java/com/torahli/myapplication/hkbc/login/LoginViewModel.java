@@ -1,7 +1,12 @@
 package com.torahli.myapplication.hkbc.login;
 
 import android.arch.lifecycle.MutableLiveData;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
+import com.f2prateek.rx.preferences2.RxSharedPreferences;
+import com.torahli.myapplication.MainApplication;
+import com.torahli.myapplication.app.sharedpreferences.SharedPrefsKey;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.bean.NetErrorType;
 import com.torahli.myapplication.framwork.vm.BaseViewModel;
@@ -13,6 +18,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
@@ -34,7 +40,7 @@ public class LoginViewModel extends BaseViewModel {
         return loginResultLiveData;
     }
 
-    public void startLogin(String account, String password) {
+    public void startLogin(final String account, final String password) {
         Map<String, String> params = new HashMap<String, String>(6);
         params.put("fastloginfield", "username");
         params.put("username", account);
@@ -55,6 +61,14 @@ public class LoginViewModel extends BaseViewModel {
                     Tlog.d(TAG, "onNext --- result:" + result);
                 }
                 loginResultLiveData.setValue(result);
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainApplication.getApplication());
+                RxSharedPreferences rxPreferences = RxSharedPreferences.create(preferences);
+                Flowable.just(account)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(rxPreferences.getString(SharedPrefsKey.username).asConsumer());
+                Flowable.just(password)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(rxPreferences.getString(SharedPrefsKey.password).asConsumer());
             }
 
             @Override

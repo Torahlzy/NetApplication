@@ -6,7 +6,9 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -19,9 +21,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.f2prateek.rx.preferences2.RxSharedPreferences;
+import com.torahli.myapplication.MainApplication;
 import com.torahli.myapplication.R;
+import com.torahli.myapplication.app.sharedpreferences.SharedPrefsKey;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
 import com.torahli.myapplication.hkbc.login.bean.LoginResult;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DefaultObserver;
 
 /**
  * A login screen that offers login via email/password.
@@ -64,6 +72,45 @@ public class LoginActivity extends BaseActivity {
             }
         });
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainApplication.getApplication());
+        RxSharedPreferences rxPreferences = RxSharedPreferences.create(preferences);
+        rxPreferences.getString(SharedPrefsKey.username, "").asObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultObserver<String>() {
+                    @Override
+                    public void onNext(String s) {
+                        mEmailView.setText(s);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+        rxPreferences.getString(SharedPrefsKey.password, "").asObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultObserver<String>() {
+                    @Override
+                    public void onNext(String s) {
+                        mPasswordView.setText(s);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -84,11 +131,12 @@ public class LoginActivity extends BaseActivity {
                     String errorMsg = result != null ? result.getLoginMsg() : "登陆失败";
                     mEmailView.setError(errorMsg);
                 } else {
-                    Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, "登陆成功,首页下拉刷新后生效", Toast.LENGTH_LONG).show();
                     finish();
                 }
             }
         });
+
     }
 
     /**

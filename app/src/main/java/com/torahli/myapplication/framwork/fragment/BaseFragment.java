@@ -7,4 +7,8 @@ public class BaseFragment extends BaseUmengFragment {
     public void showTips(String msg) {
         ((BaseActivity) getActivity()).showTips(msg);
     }
+
+    public void showToast(String msg) {
+        ((BaseActivity) getActivity()).showToast(msg);
+    }
 }
