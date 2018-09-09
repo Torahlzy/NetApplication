@@ -1,5 +1,13 @@
 package com.torahli.myapplication.app.update.download;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
+import android.support.v4.content.FileProvider;
+import android.text.TextUtils;
+
+import com.torahli.myapplication.MainApplication;
 import com.torahli.myapplication.app.net.APPProtocolUtil;
 import com.torahli.myapplication.app.update.bean.UpdateInfo;
 import com.torahli.myapplication.framwork.Tlog;
@@ -30,9 +38,9 @@ public class DownLoadAPKUtil {
     public void startDownLoad(@Nonnull final UpdateInfo.Update update) {
         APPProtocolUtil.startDownload(update.url)
                 .subscribeOn(Schedulers.io())
-                .map(new Function<ResponseBody, Object>() {
+                .map(new Function<ResponseBody, String>() {
                     @Override
-                    public Object apply(ResponseBody responseBody) throws Exception {
+                    public String apply(ResponseBody responseBody) throws Exception {
                         if (responseBody.contentLength() > 0) {
                             BufferedSource source = responseBody.source();
                             return saveToDisk(source, update);
@@ -42,11 +50,18 @@ public class DownLoadAPKUtil {
 
                     }
                 }).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultSubscriber<Object>() {
+                .subscribe(new DefaultSubscriber<String>() {
                     @Override
-                    public void onNext(Object o) {
-                        if (Tlog.isShowLogCat()) {
-                            Tlog.d(TAG, "onNext --- o:" + o);
+                    public void onNext(String str) {
+                        if (!TextUtils.isEmpty(str)) {
+                            if (Tlog.isShowLogCat()) {
+                                Tlog.d(TAG, "onNext --- str:" + str);
+                            }
+                            installUpdate(new File(str));
+                        } else if (Tlog.isShowLogCat()) {
+                            if (Tlog.isShowLogCat()) {
+                                Tlog.d(TAG, "onNext --- 保存文件失败" );
+                            }
                         }
                     }
 
@@ -96,5 +111,22 @@ public class DownLoadAPKUtil {
         }
         return "";
     }
-
+    /**
+     * 安装apk
+     * @param file
+     * @return
+     */
+    public static void installUpdate(File file) {
+        Context context = MainApplication.getApplication();
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // 7.0+以上版本
+            Uri apkUri = FileProvider.getUriForFile(context, "com.torahli.myapplication.fileprovider", file);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+        } else {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+        }
+        context.startActivity(intent);
+    }
 }

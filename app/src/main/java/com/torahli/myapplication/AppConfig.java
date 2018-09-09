@@ -22,6 +22,7 @@ public class AppConfig {
     public static final String CHECK_PDATE_JSON_URL = "https://github.com/Torahlzy/NetApplication/raw/master/raw/notice.json";
     /**
      * sd卡的文件夹路径
+     * xml\file_paths.xml
      */
     public static final String SDCARD_FOLDER = "MyNetApp";
 
