@@ -1,9 +1,12 @@
 package com.torahli.myapplication.app.update.download;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 
@@ -12,6 +15,7 @@ import com.torahli.myapplication.app.net.APPProtocolUtil;
 import com.torahli.myapplication.app.update.bean.UpdateInfo;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.util.SystemUtil;
+import com.torahli.myapplication.hkbc.MainActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,12 +34,18 @@ import okio.Okio;
 public class DownLoadAPKUtil {
     private static final String TAG = "update";
 
+    public interface IView {
+        Activity getActivity();
+
+        void showToast(String msg);
+    }
+
     /**
      * 开始下载apk
      *
      * @param update
      */
-    public void startDownLoad(@Nonnull final UpdateInfo.Update update) {
+    public void startDownLoad(@Nonnull final UpdateInfo.Update update, final IView view) {
         APPProtocolUtil.startDownload(update.url)
                 .subscribeOn(Schedulers.io())
                 .map(new Function<ResponseBody, String>() {
@@ -57,10 +67,10 @@ public class DownLoadAPKUtil {
                             if (Tlog.isShowLogCat()) {
                                 Tlog.d(TAG, "onNext --- str:" + str);
                             }
-                            installUpdate(new File(str));
+                            install(new File(str), view);
                         } else if (Tlog.isShowLogCat()) {
                             if (Tlog.isShowLogCat()) {
-                                Tlog.d(TAG, "onNext --- 保存文件失败" );
+                                Tlog.d(TAG, "onNext --- 保存文件失败");
                             }
                         }
                     }
@@ -111,15 +121,13 @@ public class DownLoadAPKUtil {
         }
         return "";
     }
-    /**
-     * 安装apk
-     * @param file
-     * @return
-     */
-    public static void installUpdate(File file) {
+
+
+    private void installUpdate(File file) {
         Context context = MainApplication.getApplication();
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // 7.0+以上版本
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            // 7.0+以上版本
             Uri apkUri = FileProvider.getUriForFile(context, "com.torahli.myapplication.fileprovider", file);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
@@ -128,5 +136,43 @@ public class DownLoadAPKUtil {
             intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
         }
         context.startActivity(intent);
+    }
+
+    /**
+     * 检查权限安装apk
+     *
+     * @param file
+     * @param view
+     * @return
+     */
+    private void install(File file, IView view) {
+        Context context = MainApplication.getApplication();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            boolean b = context.getPackageManager().canRequestPackageInstalls();
+            if (b) {
+                installUpdate(file);
+            } else {
+                //请求安装未知应用来源的权限
+                if (!hasRequest) {
+                    installFile = file;
+                    ActivityCompat.requestPermissions(view.getActivity(),
+                            new String[]{Manifest.permission.REQUEST_INSTALL_PACKAGES},
+                            MainActivity.INSTALL_PACKAGES_REQUESTCODE);
+                    hasRequest = true;
+                } else {
+                    view.showToast("获取权限失败，无法升级");
+                }
+            }
+        } else {
+            installUpdate(file);
+        }
+    }
+
+    private File installFile = null;
+    private boolean hasRequest = false;
+
+    public void continueInstall(IView view) {
+        install(installFile, view);
+        installFile = null;
     }
 }

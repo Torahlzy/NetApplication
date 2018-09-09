@@ -2,11 +2,15 @@ package com.torahli.myapplication.framwork.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import com.torahli.myapplication.AppConfig;
 import com.torahli.myapplication.MainApplication;
+import com.torahli.myapplication.framwork.Tlog;
 
 import java.io.File;
 
@@ -55,4 +59,43 @@ public class SystemUtil {
         return path;
     }
 
+    /**
+     * 获得当前app版本号
+     *
+     * @return
+     * @throws Exception
+     */
+    public static int getAppVersionCode() {
+        MainApplication context = MainApplication.getApplication();
+        int versioncode = 0;
+        try {
+            // ---get the package info---
+            PackageManager pm = context.getPackageManager();
+            PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
+            versioncode = pi.versionCode;
+        } catch (Exception e) {
+            Tlog.printException("torahlog", e);
+        }
+        return versioncode;
+    }
+
+    /**
+     * 返回当前程序版本名
+     */
+    public static String getAppVersionName() {
+        MainApplication context = MainApplication.getApplication();
+        String versionName = "";
+        try {
+            // ---get the package info---
+            PackageManager pm = context.getPackageManager();
+            PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
+            versionName = pi.versionName;
+            if (versionName == null || versionName.length() <= 0) {
+                return "";
+            }
+        } catch (Exception e) {
+            Tlog.printException("torahlog", e);
+        }
+        return versionName;
+    }
 }

@@ -1,9 +1,14 @@
 package com.torahli.myapplication.hkbc;
 
 import android.Manifest;
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 import android.support.design.widget.NavigationView;
@@ -31,6 +36,7 @@ import com.torahli.myapplication.app.update.download.DownLoadAPKUtil;
 import com.torahli.myapplication.framwork.GlideApp;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
+import com.torahli.myapplication.framwork.util.SystemUtil;
 import com.torahli.myapplication.hkbc.home.HomePageFragment;
 import com.torahli.myapplication.hkbc.login.LoginActivity;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
@@ -50,12 +56,21 @@ import io.reactivex.observers.DefaultObserver;
  * @author torah
  */
 public class MainActivity extends BaseActivity
-        implements OnNavigationItemSelectedListener {
+        implements OnNavigationItemSelectedListener, DownLoadAPKUtil.IView {
 
+    public static final int INSTALL_PACKAGES_REQUESTCODE = 110;
+    public static final int ACTION_MANAGE_UNKNOWN_APP_SOURCES = 111;
     private CheckUpdateViewModel checkUpdateViewModel;
     private View fab;
     private boolean hasLogin;
     private long preClickTimeMills;
+    private RxPermissions rxPermissions;
+    private DownLoadAPKUtil downLoadAPKUtil;
+
+    @Override
+    public Activity getActivity() {
+        return this;
+    }
 
     /**
      * fragment的tag
@@ -81,7 +96,7 @@ public class MainActivity extends BaseActivity
     }
 
     private void initPermission() {
-        final RxPermissions rxPermissions = new RxPermissions(this);
+        rxPermissions = new RxPermissions(this);
         rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .subscribe(new DefaultObserver<Boolean>() {
                     @Override
@@ -131,10 +146,40 @@ public class MainActivity extends BaseActivity
      * @param update
      */
     private void judgeStartDownLoad(UpdateInfo.Update update) {
-        //todo 对比版本
-        //todo 提示下载
-        //开始下载
-        new DownLoadAPKUtil().startDownLoad(update);
+        if (SystemUtil.getAppVersionCode() < update.versionCode) {
+            //开始下载
+            downLoadAPKUtil = new DownLoadAPKUtil();
+            downLoadAPKUtil.startDownLoad(update, this);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case INSTALL_PACKAGES_REQUESTCODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    downLoadAPKUtil.continueInstall(this);
+                } else {
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+                    startActivityForResult(intent, ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case ACTION_MANAGE_UNKNOWN_APP_SOURCES:
+                downLoadAPKUtil.continueInstall(this);
+                break;
+            default:
+                break;
+        }
     }
 
     private void initView() {
