@@ -6,8 +6,13 @@
     - 下一页
 - 当前紧急
     - doing:自动检查更新
+# 开发规范
+- 区分dataBean和UIBean
+    - UIBean可以添加用于界面提示的字段，比如网络结果。dataBean不能添加
+    - dataBean的hashCode和equals方法要能够把相同数据源的2个对象判断为相等
 
-- 用到的开源框架
+
+# 用到的开源框架
     - rxjava、retrofit、okHttp、ViewModel+LiveData
         - retrofit教程 https://www.jianshu.com/p/308f3c54abdd
         - okio教程 https://juejin.im/post/5856680c8e450a006c6474bd

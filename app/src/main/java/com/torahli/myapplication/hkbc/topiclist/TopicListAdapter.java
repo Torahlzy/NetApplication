@@ -13,7 +13,7 @@ import com.torahli.myapplication.framwork.GlideApp;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.fragment.BaseFragment;
 import com.torahli.myapplication.framwork.util.SystemUtil;
-import com.torahli.myapplication.hkbc.bean.Topic;
+import com.torahli.myapplication.hkbc.databean.Topic;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 import com.torahli.myapplication.hkbc.topiccontent.TopicContentActivity;
 

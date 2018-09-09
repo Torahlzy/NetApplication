@@ -1,6 +1,6 @@
 package com.torahli.myapplication.hkbc.topiclist;
 
-import com.torahli.myapplication.hkbc.bean.Topic;
+import com.torahli.myapplication.hkbc.databean.Topic;
 import com.torahli.myapplication.hkbc.topiclist.bean.TopicList;
 
 import org.jsoup.Jsoup;
@@ -9,6 +9,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class TopicListParser {
@@ -34,6 +35,23 @@ public class TopicListParser {
             }
         }
         topicList.setTopicList(list);
+        //解析有几页数据
+        Elements pages = doc.select("span#fd_page_top > div.pg");
+        String currentPage = pages.select("> strong").text();
+        Elements pagesLink = pages.select("> a");
+        LinkedHashMap<String, String> pageLinks = new LinkedHashMap<>();
+        for (int i = 0; i < pagesLink.size(); i++) {
+            Element page = pagesLink.get(i);
+            String pageClass = page.attr("class");
+            if ("prev".equals(pageClass) || "nxt".equals(pageClass)) {
+                continue;
+            }
+            String name = page.text();
+            pageLinks.put(name, page.attr("href"));
+        }
+        topicList.setPageName(currentPage);
+        topicList.setOtherPages(pageLinks);
+
         return topicList;
     }
 }

@@ -1,7 +1,7 @@
 package com.torahli.myapplication.hkbc.home
 
 import com.torahli.myapplication.framwork.Tlog
-import com.torahli.myapplication.hkbc.bean.Topic
+import com.torahli.myapplication.hkbc.databean.Topic
 import com.torahli.myapplication.hkbc.home.bean.Banners
 import com.torahli.myapplication.hkbc.home.bean.HomePage
 import com.torahli.myapplication.hkbc.userinfo.UserInfoManager

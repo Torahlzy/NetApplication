@@ -3,7 +3,7 @@ package com.torahli.myapplication.hkbc.home.bean;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.torahli.myapplication.framwork.bean.BaseLiveData;
 import com.torahli.myapplication.framwork.bean.NetErrorType;
-import com.torahli.myapplication.hkbc.bean.Topic;
+import com.torahli.myapplication.hkbc.databean.Topic;
 
 import java.util.ArrayList;
 import java.util.List;

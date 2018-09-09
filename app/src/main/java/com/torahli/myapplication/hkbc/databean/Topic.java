@@ -1,4 +1,4 @@
-package com.torahli.myapplication.hkbc.bean;
+package com.torahli.myapplication.hkbc.databean;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.torahli.myapplication.hkbc.home.ItemType;

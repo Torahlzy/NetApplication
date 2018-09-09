@@ -10,12 +10,13 @@ import android.view.View;
 
 import com.torahli.myapplication.R;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
-import com.torahli.myapplication.hkbc.bean.ILink;
+import com.torahli.myapplication.hkbc.databean.ILink;
 
 public class TopiclistActivity extends BaseActivity {
     public static final String INTENT_LINK = "INTENT_LINK";
+    private FloatingActionButton fab;
 
-    public static void startTopicListActivty(Context context, ILink link){
+    public static void startTopicListActivty(Context context, ILink link) {
         Intent intent = new Intent(context, TopiclistActivity.class);
         intent.putExtra(INTENT_LINK, link.getLink());
         context.startActivity(intent);
@@ -32,7 +33,7 @@ public class TopiclistActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -46,4 +47,9 @@ public class TopiclistActivity extends BaseActivity {
                 .commitAllowingStateLoss();
     }
 
+    @Override
+    public void showTips(String msg) {
+        Snackbar.make(fab, msg, Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+    }
 }

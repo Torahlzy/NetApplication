@@ -1,7 +1,7 @@
 package com.torahli.myapplication.hkbc.home.bean;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
-import com.torahli.myapplication.hkbc.bean.Topic;
+import com.torahli.myapplication.hkbc.databean.Topic;
 import com.torahli.myapplication.hkbc.home.ItemType;
 
 import java.util.ArrayList;

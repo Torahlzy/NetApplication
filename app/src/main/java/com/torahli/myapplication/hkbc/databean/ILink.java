@@ -1,4 +1,4 @@
-package com.torahli.myapplication.hkbc.bean;
+package com.torahli.myapplication.hkbc.databean;
 
 public interface ILink {
     String getLink();

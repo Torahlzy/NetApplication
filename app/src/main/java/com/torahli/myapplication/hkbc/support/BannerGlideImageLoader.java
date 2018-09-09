@@ -4,7 +4,7 @@ import android.content.Context;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.torahli.myapplication.hkbc.bean.Topic;
+import com.torahli.myapplication.hkbc.databean.Topic;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 import com.youth.banner.loader.ImageLoader;
 

@@ -20,7 +20,7 @@ import com.bumptech.glide.RequestManager;
 import com.torahli.myapplication.R;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
-import com.torahli.myapplication.hkbc.bean.ILink;
+import com.torahli.myapplication.hkbc.databean.ILink;
 import com.torahli.myapplication.hkbc.topiccontent.bean.TopicContent;
 
 import javax.annotation.Nonnull;

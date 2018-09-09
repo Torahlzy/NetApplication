@@ -19,7 +19,7 @@ import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.torahli.myapplication.R;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.util.SystemUtil;
-import com.torahli.myapplication.hkbc.bean.Topic;
+import com.torahli.myapplication.hkbc.databean.Topic;
 import com.torahli.myapplication.hkbc.home.bean.Banners;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 import com.torahli.myapplication.hkbc.support.BannerGlideImageLoader;
