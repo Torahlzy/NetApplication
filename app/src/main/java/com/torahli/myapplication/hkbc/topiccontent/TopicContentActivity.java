@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBar;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -38,6 +39,8 @@ public class TopicContentActivity extends BaseActivity {
     protected RequestManager activityGlide;
     private PhotoViewPagerAdapter pagerAdapter;
     private ProgressBar mPageProgress;
+    private TextView mTvCurpage;
+    private int maxSize;
 
     /**
      * 启动主题详情页
@@ -86,18 +89,7 @@ public class TopicContentActivity extends BaseActivity {
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
     };
-    private View mControlsView;
-    private final Runnable mShowPart2Runnable = new Runnable() {
-        @Override
-        public void run() {
-            // Delayed display of UI elements
-            ActionBar actionBar = getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.show();
-            }
-            mControlsView.setVisibility(View.VISIBLE);
-        }
-    };
+
     private boolean mVisible;
     private final Runnable mHideRunnable = new Runnable() {
         @Override
@@ -139,13 +131,12 @@ public class TopicContentActivity extends BaseActivity {
     }
 
     private void initViews() {
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
-        mControlsView = findViewById(R.id.fullscreen_content_controls);
         mViewPager = findViewById(R.id.photo_viewpager);
+        mTvCurpage = findViewById(R.id.tv_curpage);
 
         mPageProgress = findViewById(R.id.topic_content_page_progress);
 
-        pagerAdapter = new PhotoViewPagerAdapter(null, activityGlide,getLayoutInflater());
+        pagerAdapter = new PhotoViewPagerAdapter(null, activityGlide, getLayoutInflater());
         mViewPager.setAdapter(pagerAdapter);
         topicContentViewModel = ViewModelProviders.of(this).get(TopicContentViewModel.class);
         topicContentViewModel.getContentLiveData().observe(this, new Observer<TopicContent>() {
@@ -158,9 +149,28 @@ public class TopicContentActivity extends BaseActivity {
                 if (topicContent != null && !topicContent.isError()) {
                     pagerAdapter.setNewData(topicContent.getImgList());
                     pagerAdapter.notifyDataSetChanged();
+                    maxSize = topicContent.getImgList().size();
+                    mTvCurpage.setText("1/" + maxSize);
                 } else {
                     Toast.makeText(TopicContentActivity.this, "获取详情失败", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mTvCurpage.setText((position + 1) + "/" + maxSize);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
             }
         });
     }
@@ -179,13 +189,7 @@ public class TopicContentActivity extends BaseActivity {
         delayedHide(100);
     }
 
-    private void toggle() {
-        if (mVisible) {
-            hide();
-        } else {
-            show();
-        }
-    }
+
 
     private void hide() {
         // Hide UI first
@@ -193,25 +197,12 @@ public class TopicContentActivity extends BaseActivity {
         if (actionBar != null) {
             actionBar.hide();
         }
-        mControlsView.setVisibility(View.GONE);
         mVisible = false;
 
         // Schedule a runnable to remove the status and navigation bar after a delay
-        mHideHandler.removeCallbacks(mShowPart2Runnable);
         mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
     }
 
-    @SuppressLint("InlinedApi")
-    private void show() {
-        // Show the system bar
-        mViewPager.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-        mVisible = true;
-
-        // Schedule a runnable to display UI elements after a delay
-        mHideHandler.removeCallbacks(mHidePart2Runnable);
-        mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
-    }
 
     /**
      * Schedules a call to hide() in delay milliseconds, canceling any
@@ -220,5 +211,11 @@ public class TopicContentActivity extends BaseActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mViewPager.clearOnPageChangeListeners();
     }
 }
