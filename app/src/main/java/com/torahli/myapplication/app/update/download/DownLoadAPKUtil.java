@@ -38,7 +38,12 @@ public class DownLoadAPKUtil {
         Activity getActivity();
 
         void showToast(String msg);
+
+        void onDownloadFinish(String str);
     }
+
+    private File installFile = null;
+    private boolean hasRequest = false;
 
     /**
      * 开始下载apk
@@ -67,7 +72,7 @@ public class DownLoadAPKUtil {
                             if (Tlog.isShowLogCat()) {
                                 Tlog.d(TAG, "onNext --- str:" + str);
                             }
-                            install(new File(str), view);
+                            view.onDownloadFinish(str);
                         } else if (Tlog.isShowLogCat()) {
                             if (Tlog.isShowLogCat()) {
                                 Tlog.d(TAG, "onNext --- 保存文件失败");
@@ -122,7 +127,6 @@ public class DownLoadAPKUtil {
         return "";
     }
 
-
     private void installUpdate(File file) {
         Context context = MainApplication.getApplication();
         Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -145,7 +149,7 @@ public class DownLoadAPKUtil {
      * @param view
      * @return
      */
-    private void install(File file, IView view) {
+    public void install(File file, IView view) {
         Context context = MainApplication.getApplication();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             boolean b = context.getPackageManager().canRequestPackageInstalls();
@@ -167,9 +171,6 @@ public class DownLoadAPKUtil {
             installUpdate(file);
         }
     }
-
-    private File installFile = null;
-    private boolean hasRequest = false;
 
     public void continueInstall(IView view) {
         install(installFile, view);
