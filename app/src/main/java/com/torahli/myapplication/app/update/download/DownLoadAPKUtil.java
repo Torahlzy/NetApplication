@@ -97,7 +97,7 @@ public class DownLoadAPKUtil {
         new MaterialDialog.Builder(view.getActivity())
                 .positiveText("开始安装")
                 .negativeText("取消")
-                .title("已经下载到最新版本")
+                .title("已下载最新版本")
                 .content(update.desc +
                         "\n是否更新？（安装时可能需要授予安装apk权限）")
                 .onPositive(new MaterialDialog.SingleButtonCallback() {

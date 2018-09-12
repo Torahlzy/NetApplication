@@ -7,10 +7,15 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.ajguan.library.EasyRefreshLayout;
 import com.ajguan.library.LoadModel;
 import com.bumptech.glide.Glide;
@@ -19,6 +24,7 @@ import com.torahli.myapplication.R;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.fragment.BaseFragment;
 import com.torahli.myapplication.hkbc.home.bean.HomePage;
+import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 
 import javax.annotation.Nonnull;
 
@@ -84,6 +90,50 @@ public class HomePageFragment extends BaseFragment {
     }
 
     private void initData() {
-        homePageViewModel.initData();
+        new MaterialDialog.Builder(getActivity())
+                .title("设置域名")
+                .content("初始使用必须设置域名，若不知道域名，去获得app的地方找")
+                .inputType(InputType.TYPE_CLASS_TEXT)
+                .input("exp:http://www.baidu.com/", HKBCProtocolUtil.BASEURL, new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog dialog, CharSequence input) {
+                        // Do something
+                    }
+                })
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        Editable text = dialog.getInputEditText().getText();
+                        String url = formatText(text);
+                        if (!TextUtils.isEmpty(url)) {
+                            HKBCProtocolUtil.BASEURL = url;
+                            homePageViewModel.initData();
+                        } else {
+                            showToast("网址填写错误");
+                            getView().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    initData();
+                                }
+                            }, 1000);
+                        }
+                    }
+                }).show();
+
+    }
+
+    private String formatText(Editable text) {
+        if (TextUtils.isEmpty(text)) {
+            return "";
+        }
+        String s = String.valueOf(text).toLowerCase();
+        if (s.startsWith("http")) {
+            if (s.endsWith("/")) {
+                return s;
+            } else {
+                return s + "/";
+            }
+        }
+        return "";
     }
 }

@@ -12,10 +12,11 @@ import retrofit2.http.FieldMap;
  * 比思网络协议
  */
 public class HKBCProtocolUtil extends ProtocolUtil {
-    public static final String BASEURL = "http://hkbbcc.xyz/";
+    public static String BASEURL = "";//http://hkbbcc.xyz/";
 
     /**
      * 主页
+     *
      * @return
      */
     public static Flowable<String> getHomePage() {
@@ -27,17 +28,20 @@ public class HKBCProtocolUtil extends ProtocolUtil {
 
     /**
      * 登陆
+     *
      * @param map
      * @return
      */
-     public static Flowable<String> getLogin(@FieldMap Map<String, String> map) {
-         LoginProtocol loginProtocol = MyRetrofit.create(BASEURL)
+    public static Flowable<String> getLogin(@FieldMap Map<String, String> map) {
+        LoginProtocol loginProtocol = MyRetrofit.create(BASEURL)
                 .create(LoginProtocol.class);
         Flowable<String> login1 = loginProtocol.login(map);
         return login1;
     }
+
     /**
      * 获得主题详情
+     *
      * @param url
      * @return
      */
@@ -50,6 +54,7 @@ public class HKBCProtocolUtil extends ProtocolUtil {
 
     /**
      * 获得图片类的主题详情
+     *
      * @param url
      * @return
      */
@@ -65,6 +70,7 @@ public class HKBCProtocolUtil extends ProtocolUtil {
      * 拼凑地址
      * 因为有些地址不带域名
      * todo 检查域名是否正确
+     *
      * @param url
      * @return
      */
