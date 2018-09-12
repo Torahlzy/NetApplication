@@ -27,8 +27,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.torahli.myapplication.R;
 import com.torahli.myapplication.R.id;
@@ -47,7 +45,6 @@ import com.torahli.myapplication.hkbc.userinfo.bean.UserInfo;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -73,22 +70,6 @@ public class MainActivity extends BaseActivity
     @Override
     public Activity getActivity() {
         return this;
-    }
-
-    @Override
-    public void onDownloadFinish(final String str) {
-        new MaterialDialog.Builder(this)
-                .positiveText("开始安装")
-                .negativeText("取消")
-                .title("有更新")
-                .content("已经下载到最新版本，是否更新？（安装时可能需要授予安装apk权限）")
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        downLoadAPKUtil.install(new File(str), MainActivity.this);
-                    }
-                }).autoDismiss(true)
-                .show();
     }
 
     /**

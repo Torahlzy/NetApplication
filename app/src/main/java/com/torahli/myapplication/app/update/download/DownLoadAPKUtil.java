@@ -6,10 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.torahli.myapplication.MainApplication;
 import com.torahli.myapplication.app.net.APPProtocolUtil;
 import com.torahli.myapplication.app.update.bean.UpdateInfo;
@@ -38,8 +41,6 @@ public class DownLoadAPKUtil {
         Activity getActivity();
 
         void showToast(String msg);
-
-        void onDownloadFinish(String str);
     }
 
     private File installFile = null;
@@ -72,7 +73,7 @@ public class DownLoadAPKUtil {
                             if (Tlog.isShowLogCat()) {
                                 Tlog.d(TAG, "onNext --- str:" + str);
                             }
-                            view.onDownloadFinish(str);
+                            onDownloadFinish(str, update, view);
                         } else if (Tlog.isShowLogCat()) {
                             if (Tlog.isShowLogCat()) {
                                 Tlog.d(TAG, "onNext --- 保存文件失败");
@@ -90,6 +91,22 @@ public class DownLoadAPKUtil {
 
                     }
                 });
+    }
+
+    private void onDownloadFinish(final String path, UpdateInfo.Update update, final IView view) {
+        new MaterialDialog.Builder(view.getActivity())
+                .positiveText("开始安装")
+                .negativeText("取消")
+                .title("已经下载到最新版本")
+                .content(update.desc +
+                        "\n是否更新？（安装时可能需要授予安装apk权限）")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        install(new File(path), view);
+                    }
+                }).autoDismiss(true)
+                .show();
     }
 
     /**
@@ -149,7 +166,7 @@ public class DownLoadAPKUtil {
      * @param view
      * @return
      */
-    public void install(File file, IView view) {
+    private void install(File file, IView view) {
         Context context = MainApplication.getApplication();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             boolean b = context.getPackageManager().canRequestPackageInstalls();
