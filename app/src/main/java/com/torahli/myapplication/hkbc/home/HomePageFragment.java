@@ -1,7 +1,9 @@
 package com.torahli.myapplication.hkbc.home;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -20,13 +22,21 @@ import com.ajguan.library.EasyRefreshLayout;
 import com.ajguan.library.LoadModel;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.f2prateek.rx.preferences2.RxSharedPreferences;
+import com.torahli.myapplication.MainApplication;
 import com.torahli.myapplication.R;
+import com.torahli.myapplication.app.sharedpreferences.SharedPrefsKey;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.fragment.BaseFragment;
 import com.torahli.myapplication.hkbc.home.bean.HomePage;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 
 import javax.annotation.Nonnull;
+
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DefaultObserver;
+import io.reactivex.schedulers.Schedulers;
 
 public class HomePageFragment extends BaseFragment {
     @Nonnull
@@ -35,6 +45,7 @@ public class HomePageFragment extends BaseFragment {
     private RecyclerView homeList;
     private HomeAdapter homeAdapter;
     private EasyRefreshLayout refreshLayout;
+    private RxSharedPreferences rxPreferences;
 
     @Nullable
     @Override
@@ -46,6 +57,8 @@ public class HomePageFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         fragmentGlide = Glide.with(this);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainApplication.getApplication());
+        rxPreferences = RxSharedPreferences.create(preferences);
         initView(view);
         initData();
     }
@@ -90,6 +103,34 @@ public class HomePageFragment extends BaseFragment {
     }
 
     private void initData() {
+        //判断是否有域名
+        rxPreferences.getString(SharedPrefsKey.hostUrl).asObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultObserver<String>() {
+                    @Override
+                    public void onNext(String s) {
+                        String url = formatText(s);
+                        if (!TextUtils.isEmpty(url)) {
+                            HKBCProtocolUtil.BASEURL = url;
+                            homePageViewModel.initData();
+                        } else {
+                            showSetUrlDialog();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    private void showSetUrlDialog() {
         new MaterialDialog.Builder(getActivity())
                 .title("设置域名")
                 .content("初始使用必须设置域名，若不知道域名，去获得app的地方找")
@@ -97,15 +138,17 @@ public class HomePageFragment extends BaseFragment {
                 .input("exp:http://www.baidu.com/", HKBCProtocolUtil.BASEURL, new MaterialDialog.InputCallback() {
                     @Override
                     public void onInput(MaterialDialog dialog, CharSequence input) {
-                        // Do something
                     }
                 })
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         Editable text = dialog.getInputEditText().getText();
-                        String url = formatText(text);
+                        String url = formatText(String.valueOf(text));
                         if (!TextUtils.isEmpty(url)) {
+                            Flowable.just(url)
+                                    .subscribeOn(Schedulers.io())
+                                    .subscribe(rxPreferences.getString(SharedPrefsKey.hostUrl).asConsumer());
                             HKBCProtocolUtil.BASEURL = url;
                             homePageViewModel.initData();
                         } else {
@@ -113,16 +156,15 @@ public class HomePageFragment extends BaseFragment {
                             getView().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    initData();
+                                    showSetUrlDialog();
                                 }
                             }, 1000);
                         }
                     }
                 }).show();
-
     }
 
-    private String formatText(Editable text) {
+    private String formatText(String text) {
         if (TextUtils.isEmpty(text)) {
             return "";
         }
