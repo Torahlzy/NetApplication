@@ -29,7 +29,6 @@ import android.widget.Toast;
 
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.torahli.myapplication.R;
-import com.torahli.myapplication.R.id;
 import com.torahli.myapplication.app.update.CheckUpdateViewModel;
 import com.torahli.myapplication.app.update.bean.UpdateInfo;
 import com.torahli.myapplication.app.update.download.DownLoadAPKUtil;
@@ -40,6 +39,7 @@ import com.torahli.myapplication.framwork.util.SystemUtil;
 import com.torahli.myapplication.hkbc.home.HomePageFragment;
 import com.torahli.myapplication.hkbc.login.LoginActivity;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
+import com.torahli.myapplication.hkbc.setting.SettingsActivity;
 import com.torahli.myapplication.hkbc.userinfo.UserInfoManager;
 import com.torahli.myapplication.hkbc.userinfo.bean.UserInfo;
 
@@ -183,22 +183,22 @@ public class MainActivity extends BaseActivity
     }
 
     private void initView() {
-        Toolbar toolBar = (Toolbar) this.findViewById(id.toolbar);
+        Toolbar toolBar = (Toolbar) this.findViewById(R.id.toolbar);
         setSupportActionBar(toolBar);
-        fab = findViewById(id.fab);
+        fab = findViewById(R.id.fab);
         fab.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 showTips("todo");
             }
         });
-        drawer = (DrawerLayout) this.findViewById(id.drawer_layout);
+        drawer = (DrawerLayout) this.findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolBar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener((DrawerListener) toggle);
         toggle.syncState();
 
-        navView = (NavigationView) this.findViewById(id.nav_view);
+        navView = (NavigationView) this.findViewById(R.id.nav_view);
         navView.setNavigationItemSelectedListener(this);
     }
 
@@ -272,6 +272,12 @@ public class MainActivity extends BaseActivity
         return true;
     }
 
+    /**
+     * 右上角三个点
+     *
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(@NotNull MenuItem item) {
         switch (item.getItemId()) {
@@ -282,11 +288,23 @@ public class MainActivity extends BaseActivity
         }
     }
 
+    /**
+     * 侧边栏选项
+     *
+     * @param item
+     * @return
+     */
     @Override
     public boolean onNavigationItemSelected(@NotNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.nav_camera:
 
+                drawer.closeDrawer(GravityCompat.START);
+                break;
+            case R.id.nav_setting:
+                SettingsActivity.startSettingActivity(this);
+                drawer.closeDrawer(GravityCompat.START);
+                break;
             default:
                 drawer.closeDrawer(GravityCompat.START);
         }

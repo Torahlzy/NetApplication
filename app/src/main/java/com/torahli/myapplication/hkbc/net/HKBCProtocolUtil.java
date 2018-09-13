@@ -9,7 +9,7 @@ import io.reactivex.Flowable;
 import retrofit2.http.FieldMap;
 
 /**
- * 比思网络协议
+ * 网络协议
  */
 public class HKBCProtocolUtil extends ProtocolUtil {
     public static String BASEURL = "";//http://hkbbcc.xyz/";
