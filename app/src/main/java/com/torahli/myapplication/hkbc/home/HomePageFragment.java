@@ -1,23 +1,17 @@
 package com.torahli.myapplication.hkbc.home;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.ajguan.library.EasyRefreshLayout;
 import com.ajguan.library.LoadModel;
 import com.bumptech.glide.Glide;
@@ -30,15 +24,14 @@ import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.fragment.BaseFragment;
 import com.torahli.myapplication.hkbc.home.bean.HomePage;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
+import com.torahli.myapplication.hkbc.setting.sethost.SetUrlDialogHelper;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DefaultObserver;
-import io.reactivex.schedulers.Schedulers;
 
-public class HomePageFragment extends BaseFragment {
+public class HomePageFragment extends BaseFragment implements SetUrlDialogHelper.IView {
     @Nonnull
     protected RequestManager fragmentGlide;
     private HomePageViewModel homePageViewModel;
@@ -57,8 +50,7 @@ public class HomePageFragment extends BaseFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         fragmentGlide = Glide.with(this);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainApplication.getApplication());
-        rxPreferences = RxSharedPreferences.create(preferences);
+        rxPreferences = MainApplication.getApplication().getRxPreferences();
         initView(view);
         initData();
     }
@@ -103,13 +95,13 @@ public class HomePageFragment extends BaseFragment {
     }
 
     private void initData() {
-        //判断是否有域名
+        //判断是否有域名缓存
         rxPreferences.getString(SharedPrefsKey.hostUrl).asObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultObserver<String>() {
                     @Override
                     public void onNext(String s) {
-                        String url = formatText(s);
+                        String url = SetUrlDialogHelper.checkHost(s);
                         if (!TextUtils.isEmpty(url)) {
                             HKBCProtocolUtil.BASEURL = url;
                             homePageViewModel.initData();
@@ -130,52 +122,18 @@ public class HomePageFragment extends BaseFragment {
                 });
     }
 
+    /**
+     * 需要用户设置域名
+     */
     private void showSetUrlDialog() {
-        new MaterialDialog.Builder(getActivity())
-                .title("设置域名")
-                .content("初始使用必须设置域名，若不知道域名，去获得app的地方找")
-                .inputType(InputType.TYPE_CLASS_TEXT)
-                .input("exp:http://www.baidu.com/", HKBCProtocolUtil.BASEURL, new MaterialDialog.InputCallback() {
-                    @Override
-                    public void onInput(MaterialDialog dialog, CharSequence input) {
-                    }
-                })
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        Editable text = dialog.getInputEditText().getText();
-                        String url = formatText(String.valueOf(text));
-                        if (!TextUtils.isEmpty(url)) {
-                            Flowable.just(url)
-                                    .subscribeOn(Schedulers.io())
-                                    .subscribe(rxPreferences.getString(SharedPrefsKey.hostUrl).asConsumer());
-                            HKBCProtocolUtil.BASEURL = url;
-                            homePageViewModel.initData();
-                        } else {
-                            showToast("网址填写错误");
-                            getView().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    showSetUrlDialog();
-                                }
-                            }, 1000);
-                        }
-                    }
-                }).show();
+        SetUrlDialogHelper.showSetUrlDialog(this);
     }
 
-    private String formatText(String text) {
-        if (TextUtils.isEmpty(text)) {
-            return "";
-        }
-        String s = String.valueOf(text).toLowerCase();
-        if (s.startsWith("http")) {
-            if (s.endsWith("/")) {
-                return s;
-            } else {
-                return s + "/";
-            }
-        }
-        return "";
+    /**
+     * 设置完域名后回调此方法
+     */
+    @Override
+    public void onHostSetted() {
+        homePageViewModel.initData();
     }
 }

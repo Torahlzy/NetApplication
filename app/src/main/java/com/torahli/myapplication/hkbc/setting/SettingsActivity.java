@@ -19,8 +19,11 @@ import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.torahli.myapplication.R;
+import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
+import com.torahli.myapplication.hkbc.setting.sethost.SetUrlDialogHelper;
 
 import java.util.List;
 
@@ -35,14 +38,15 @@ import java.util.List;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
-public class SettingsActivity extends AppCompatPreferenceActivity {
+public class SettingsActivity extends AppCompatPreferenceActivity implements SetUrlDialogHelper.IView {
 
 
-    public static void startSettingActivity(Activity activity){
+    public static void startSettingActivity(Activity activity) {
         Intent intent = new Intent();
         intent.setClass(activity, SettingsActivity.class);
         activity.startActivity(intent);
     }
+
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -170,6 +174,21 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
 
+    @Override
+    public Activity getActivity() {
+        return this;
+    }
+
+    @Override
+    public void onHostSetted() {
+        showToast("设置“" + HKBCProtocolUtil.BASEURL + "”成功\n在首页下拉刷新后加载最新数据");
+    }
+
+    @Override
+    public void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
     /**
      * This fragment shows general preferences only. It is used when the
      * activity is showing a two-pane settings UI.
@@ -258,6 +277,15 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 return true;
             }
             return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onHeaderClick(Header header, int position) {
+        if (header.id == R.id.setting_set_url) {
+            SetUrlDialogHelper.showSetUrlDialog(this);
+        } else {
+            super.onHeaderClick(header, position);
         }
     }
 }
