@@ -88,7 +88,7 @@ public class TopicListFragment extends BaseFragment {
                             refreshLayout.loadMoreComplete();
                         }
                     }
-                    showTips("加载 " + topicList.getPageName() + " 成功");
+                    showTips("加载第" + topicList.getPageName() + "页成功");
                 }
             }
         });
@@ -103,5 +103,7 @@ public class TopicListFragment extends BaseFragment {
         if (arguments != null) {
             mLink = arguments.getString(TopiclistActivity.INTENT_LINK);
         }
+        String title = arguments.getString(TopiclistActivity.INTENT_TITLE);
+
     }
 }

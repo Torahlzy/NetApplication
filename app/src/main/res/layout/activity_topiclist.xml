@@ -2,9 +2,9 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/topiclist_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/topiclist_main"
     tools:context=".hkbc.topiclist.TopiclistActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -25,6 +25,7 @@
         android:id="@+id/content_fl_topiclist"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
     </FrameLayout>
 
     <android.support.design.widget.FloatingActionButton

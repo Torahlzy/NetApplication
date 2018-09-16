@@ -118,7 +118,7 @@ public class HomeAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, Base
         if (Tlog.isShowLogCat()) {
             Tlog.i(TAG, "准备打开主题列表--- entity:" + entity);
         }
-        TopiclistActivity.startTopicListActivty(homePageFragment.getActivity(), entity);
+        TopiclistActivity.startTopicListActivty(homePageFragment.getActivity(), entity.getTitle(), entity);
     }
 
     private void initType() {
