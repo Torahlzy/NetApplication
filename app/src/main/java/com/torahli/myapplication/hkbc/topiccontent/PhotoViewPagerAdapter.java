@@ -74,6 +74,7 @@ public class PhotoViewPagerAdapter extends PagerAdapter {
         final PhotoView photoView = pagerPhotoView.findViewById(R.id.photoview_photo);
         final NumberProgressBar progressBar = pagerPhotoView.findViewById(R.id.pb_photo_load_progress);
         String url = HKBCProtocolUtil.getWholeUrl(mData.get(position));
+        progressBar.setVisibility(View.VISIBLE);
         // Glide 下载监听
         ProgressManager.getInstance().addResponseListener(url, new ProgressListener() {
             @Override
