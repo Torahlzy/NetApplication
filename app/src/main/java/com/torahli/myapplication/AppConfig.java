@@ -13,7 +13,7 @@ public class AppConfig {
      */
     public static final String TAG_APPEND = " torahlog";
 
-    public static final boolean debug = true;
+    public static final boolean debug = BuildConfig._debug;
 
     public static final String UMENG_APP_KEY = "5b6ea00ef43e4852fc0000ef";
     public static final String UMENG_PUSH_SECRET = "";

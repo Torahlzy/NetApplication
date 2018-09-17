@@ -23,7 +23,7 @@ public abstract class BaseFragment extends BaseNavFragment {
     @Override
     public void onSupportVisible() {
         super.onSupportVisible();
-        if (TextUtils.isEmpty(getTitle())) {
+        if (!TextUtils.isEmpty(getTitle())) {
             setTitle(getTitle());
         }
     }
