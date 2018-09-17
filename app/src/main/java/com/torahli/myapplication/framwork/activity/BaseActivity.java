@@ -1,5 +1,6 @@
 package com.torahli.myapplication.framwork.activity;
 
+import android.support.v7.app.ActionBar;
 import android.widget.Toast;
 
 /**
@@ -17,5 +18,16 @@ public abstract class BaseActivity extends BaseNavActivity {
 
     public void showToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * 设置标题
+     * @param title
+     */
+    public void setTitle(String title){
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) {
+            supportActionBar.setTitle(title);
+        }
     }
 }

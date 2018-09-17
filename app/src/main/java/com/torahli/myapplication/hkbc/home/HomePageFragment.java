@@ -21,6 +21,7 @@ import com.torahli.myapplication.MainApplication;
 import com.torahli.myapplication.R;
 import com.torahli.myapplication.app.sharedpreferences.SharedPrefsKey;
 import com.torahli.myapplication.framwork.Tlog;
+import com.torahli.myapplication.framwork.activity.BaseActivity;
 import com.torahli.myapplication.framwork.fragment.BaseFragment;
 import com.torahli.myapplication.hkbc.home.bean.HomePage;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
@@ -39,6 +40,12 @@ public class HomePageFragment extends BaseFragment implements SetUrlDialogHelper
     private HomeAdapter homeAdapter;
     private EasyRefreshLayout refreshLayout;
     private RxSharedPreferences rxPreferences;
+
+    public static HomePageFragment newInstance(BaseActivity activity){
+        HomePageFragment fragment = new HomePageFragment();
+        fragment.setNoneNullActivity(activity);
+        return fragment;
+    }
 
     @Nullable
     @Override
@@ -135,5 +142,10 @@ public class HomePageFragment extends BaseFragment implements SetUrlDialogHelper
     @Override
     public void onHostSetted() {
         homePageViewModel.initData();
+    }
+
+    @Override
+    public String getTitle() {
+        return "首页";
     }
 }

@@ -19,12 +19,12 @@ import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.torahli.myapplication.R;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.util.SystemUtil;
+import com.torahli.myapplication.hkbc.NavigationUtil;
 import com.torahli.myapplication.hkbc.databean.Topic;
 import com.torahli.myapplication.hkbc.home.bean.Banners;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 import com.torahli.myapplication.hkbc.support.BannerGlideImageLoader;
 import com.torahli.myapplication.hkbc.topiccontent.TopicContentActivity;
-import com.torahli.myapplication.hkbc.topiclist.TopicListFragment;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
@@ -115,11 +115,8 @@ public class HomeAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, Base
      * @param entity
      */
     private void jumpTopicListPage(Topic entity) {
-        if (Tlog.isShowLogCat()) {
-            Tlog.i(TAG, "准备打开主题列表--- entity:" + entity);
-        }
-        homePageFragment.extraTransaction()
-                .start(TopicListFragment.newInstance(entity.getLink(), entity.getTitle()));
+        NavigationUtil.startTopicList(
+                homePageFragment, entity.getLink(), entity.getTitle());
     }
 
     private void initType() {

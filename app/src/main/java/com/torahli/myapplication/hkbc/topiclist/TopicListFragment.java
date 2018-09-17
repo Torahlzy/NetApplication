@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.ajguan.library.EasyRefreshLayout;
 import com.torahli.myapplication.R;
+import com.torahli.myapplication.framwork.activity.BaseActivity;
 import com.torahli.myapplication.framwork.fragment.BaseFragment;
 import com.torahli.myapplication.hkbc.topiclist.bean.TopicList;
 
@@ -34,12 +35,14 @@ public class TopicListFragment extends BaseFragment {
     private TopicListAdapter adapter;
     private TopicListViewModel topicListViewModel;
     private EasyRefreshLayout refreshLayout;
+    private String title;
 
-    public static TopicListFragment newInstance(String link,String title){
+    public static TopicListFragment newInstance(BaseActivity activity, String link, String title) {
+
         TopicListFragment fragment = new TopicListFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(INTENT_LINK,link);
-        bundle.putString(INTENT_TITLE,title);
+        bundle.putString(INTENT_LINK, link);
+        bundle.putString(INTENT_TITLE, title);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -114,7 +117,12 @@ public class TopicListFragment extends BaseFragment {
         if (arguments != null) {
             mLink = arguments.getString(INTENT_LINK);
         }
-        String title = arguments.getString(INTENT_TITLE);
+        title = arguments.getString(INTENT_TITLE);
 
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
     }
 }

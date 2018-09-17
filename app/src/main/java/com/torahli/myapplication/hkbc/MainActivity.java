@@ -251,7 +251,7 @@ public class MainActivity extends BaseActivity
 
     private void initHome() {
         if (findFragment(HomePageFragment.class) == null) {
-            loadRootFragment(R.id.hk_main_content, new HomePageFragment());
+            loadRootFragment(R.id.hk_main_content, HomePageFragment.newInstance(this));
         }
     }
 
@@ -262,7 +262,6 @@ public class MainActivity extends BaseActivity
         } else {
             super.onBackPressedSupport();
         }
-
     }
 
     @Override
