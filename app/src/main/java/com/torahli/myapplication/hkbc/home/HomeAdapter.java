@@ -24,7 +24,7 @@ import com.torahli.myapplication.hkbc.home.bean.Banners;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 import com.torahli.myapplication.hkbc.support.BannerGlideImageLoader;
 import com.torahli.myapplication.hkbc.topiccontent.TopicContentActivity;
-import com.torahli.myapplication.hkbc.topiclist.TopiclistActivity;
+import com.torahli.myapplication.hkbc.topiclist.TopicListFragment;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
@@ -118,7 +118,8 @@ public class HomeAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, Base
         if (Tlog.isShowLogCat()) {
             Tlog.i(TAG, "准备打开主题列表--- entity:" + entity);
         }
-        TopiclistActivity.startTopicListActivty(homePageFragment.getActivity(), entity.getTitle(), entity);
+        homePageFragment.extraTransaction()
+                .start(TopicListFragment.newInstance(entity.getLink(), entity.getTitle()));
     }
 
     private void initType() {

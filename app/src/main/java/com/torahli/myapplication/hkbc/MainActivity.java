@@ -250,18 +250,17 @@ public class MainActivity extends BaseActivity
     }
 
     private void initHome() {
-        //动态加载
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.hk_main_content, new HomePageFragment(), "home")
-                .commitAllowingStateLoss();
+        if (findFragment(HomePageFragment.class) == null) {
+            loadRootFragment(R.id.hk_main_content, new HomePageFragment());
+        }
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressedSupport() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            super.onBackPressedSupport();
         }
 
     }

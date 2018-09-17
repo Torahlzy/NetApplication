@@ -16,3 +16,4 @@
     - 各种dialog https://github.com/afollestad/material-dialogs/blob/master/README_OLD.md
     - retrofit下载器 https://github.com/Tamicer/FastDownloader
     - Rx Preferences https://github.com/f2prateek/rx-preferences
+    - fragment导航 https://github.com/YoKeyword/Fragmentation/blob/master/README_CN.md

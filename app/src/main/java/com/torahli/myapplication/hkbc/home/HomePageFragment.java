@@ -104,7 +104,7 @@ public class HomePageFragment extends BaseFragment implements SetUrlDialogHelper
                         String url = SetUrlDialogHelper.checkHost(s);
                         if (!TextUtils.isEmpty(url)) {
                             HKBCProtocolUtil.BASEURL = url;
-                            homePageViewModel.initData();
+                            onHostSetted();
                         } else {
                             showSetUrlDialog();
                         }

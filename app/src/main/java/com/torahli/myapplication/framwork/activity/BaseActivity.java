@@ -5,7 +5,7 @@ import android.widget.Toast;
 /**
  * 所有常规activity都应该继承此类
  */
-public abstract class BaseActivity extends BaseUmengActivity {
+public abstract class BaseActivity extends BaseNavActivity {
     /**
      * 子类有SnakeBar的应该替换掉实现
      *

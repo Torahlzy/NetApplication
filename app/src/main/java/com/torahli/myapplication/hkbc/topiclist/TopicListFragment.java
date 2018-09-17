@@ -27,11 +27,22 @@ import javax.annotation.Nonnull;
  * 没有更多，提示
  */
 public class TopicListFragment extends BaseFragment {
+    public static final String INTENT_LINK = "intent_link";
+    public static final String INTENT_TITLE = "intent_title";
     private String mLink;
     private RecyclerView mRecyclerView;
     private TopicListAdapter adapter;
     private TopicListViewModel topicListViewModel;
     private EasyRefreshLayout refreshLayout;
+
+    public static TopicListFragment newInstance(String link,String title){
+        TopicListFragment fragment = new TopicListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(INTENT_LINK,link);
+        bundle.putString(INTENT_TITLE,title);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(@Nonnull LayoutInflater inflater, ViewGroup container,
@@ -101,9 +112,9 @@ public class TopicListFragment extends BaseFragment {
     private void initArgs() {
         Bundle arguments = getArguments();
         if (arguments != null) {
-            mLink = arguments.getString(TopiclistActivity.INTENT_LINK);
+            mLink = arguments.getString(INTENT_LINK);
         }
-        String title = arguments.getString(TopiclistActivity.INTENT_TITLE);
+        String title = arguments.getString(INTENT_TITLE);
 
     }
 }
