@@ -109,6 +109,7 @@ public class HomePageFragment extends BaseFragment implements SetUrlDialogHelper
                     @Override
                     public void onNext(String s) {
                         String url = SetUrlDialogHelper.checkHost(s);
+                        showTips(url);
                         if (!TextUtils.isEmpty(url)) {
                             HKBCProtocolUtil.BASEURL = url;
                             onHostSetted();

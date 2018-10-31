@@ -46,6 +46,7 @@ public class SetUrlDialogHelper {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         Editable text = dialog.getInputEditText().getText();
                         String url = checkHost(String.valueOf(text));
+                        view.showToast(url);
                         if (!TextUtils.isEmpty(url)) {
                             Flowable.just(url)
                                     .subscribeOn(Schedulers.io())
@@ -77,12 +78,14 @@ public class SetUrlDialogHelper {
         }
         String s = String.valueOf(text).toLowerCase();
         if (s.startsWith("http")) {
-            if (s.endsWith("/")) {
-                return s;
-            } else {
-                return s + "/";
-            }
+        } else {
+            s = "http://" + s;
         }
-        return "";
+
+        if (s.endsWith("/")) {
+            return s;
+        } else {
+            return s + "/";
+        }
     }
 }

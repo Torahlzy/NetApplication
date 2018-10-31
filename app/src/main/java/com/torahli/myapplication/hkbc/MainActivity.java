@@ -218,6 +218,7 @@ public class MainActivity extends BaseActivity
                         showToast("您已经登录，双击头像可以替换其他账号");
                     }
                 } else {
+                    drawer.closeDrawer(GravityCompat.START);
                     LoginActivity.startLoginActivity(MainActivity.this);
                 }
             }
@@ -242,7 +243,7 @@ public class MainActivity extends BaseActivity
                             userName.setText(R.string.myapp_name);
                             headImage.setImageResource(R.drawable.ic_default_user);
                             userContent.setText(R.string.app_login_tip);
-                            showTips("没有登录，部分帖子可能加载失败");
+                            showTips("请在侧边栏登录，否则部分帖子可能加载失败");
                         }
 
                     }

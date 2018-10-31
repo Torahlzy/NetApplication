@@ -8,8 +8,8 @@ android {
         applicationId "com.torahli.myapplication"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 100
-        versionName "1.0"
+        versionCode 1001
+        versionName "1.001"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
