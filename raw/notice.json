@@ -1,8 +1,8 @@
 {
   "update": {
-    "versionCode": 1000,
+    "versionCode": 1001,
     "versionName": "1.0",
     "url": "https://github.com/Torahlzy/NetApplication/raw/master/raw/NetApp.apk",
-    "desc": "1.00 已更新!\n1.修复已知奔溃"
+    "desc": "1.001 已更新!\n初始发布"
   }
 }
