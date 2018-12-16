@@ -16,6 +16,12 @@ public class MakeFriendsAction extends BaseAction {
         return "和" + targetPerson.getFullName() + "结为好友";
     }
 
+    @Override
+    public void action() {
+        targetPerson.addFriend(actionPerson);
+        actionPerson.addFriend(targetPerson);
+    }
+
     /**
      * 判断是否能结交好友
      *
@@ -23,7 +29,7 @@ public class MakeFriendsAction extends BaseAction {
      * @param target
      * @return
      */
-    public static final boolean canMakeFriends(BasePerson action, BasePerson target) {
-        return true;
+    public static boolean canMakeFriends(BasePerson action, BasePerson target) {
+        return !action.isFriend(target);
     }
 }

@@ -43,6 +43,7 @@ public class SimpleScean extends BaseScean {
                 for (BasePerson target : people) {
                     if (MakeFriendsAction.canMakeFriends(person, target)) {
                         ((MakeFriendsAction) action).targetPerson = target;
+                        action.action();
                         String sceanRecord = getTime() + person.getFullName() + "在" + getSceanName() + action.getSceanString();
                         record(sceanRecord);
                         return true;

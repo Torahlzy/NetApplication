@@ -67,4 +67,5 @@ dependencies {
     implementation 'com.github.tbruyelle:rxpermissions:0.10.2'
     implementation 'com.f2prateek.rx.preferences2:rx-preferences:2.0.0'
     implementation 'me.yokeyword:fragmentation-core:1.3.6'
+    implementation 'org.greenrobot:eventbus:3.1.1'
 }
