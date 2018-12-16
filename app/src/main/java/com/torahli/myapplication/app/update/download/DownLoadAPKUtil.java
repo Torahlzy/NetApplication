@@ -18,7 +18,7 @@ import com.torahli.myapplication.app.net.APPProtocolUtil;
 import com.torahli.myapplication.app.update.bean.UpdateInfo;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.util.SystemUtil;
-import com.torahli.myapplication.hkbc.MainActivity;
+import com.torahli.myapplication.app.MainActivity;
 
 import java.io.File;
 import java.io.IOException;

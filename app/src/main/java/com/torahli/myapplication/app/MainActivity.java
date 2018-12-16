@@ -1,4 +1,4 @@
-package com.torahli.myapplication.hkbc;
+package com.torahli.myapplication.app;
 
 import android.Manifest;
 import android.app.Activity;
@@ -36,6 +36,7 @@ import com.torahli.myapplication.framwork.GlideApp;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
 import com.torahli.myapplication.framwork.util.SystemUtil;
+import com.torahli.myapplication.game.ui.MainGameFragment;
 import com.torahli.myapplication.hkbc.home.HomePageFragment;
 import com.torahli.myapplication.hkbc.login.LoginActivity;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
@@ -89,7 +90,7 @@ public class MainActivity extends BaseActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initPermission();
+//        initPermission();
         initView();
         initHome();
         initNaviView();
@@ -252,7 +253,7 @@ public class MainActivity extends BaseActivity
 
     private void initHome() {
         if (findFragment(HomePageFragment.class) == null) {
-            loadRootFragment(R.id.hk_main_content, HomePageFragment.newInstance(this));
+            loadRootFragment(R.id.hk_main_content, MainGameFragment.newInstance(this));
         }
     }
 
