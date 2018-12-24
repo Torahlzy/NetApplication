@@ -31,6 +31,6 @@ public class WorkAction extends BaseAction {
     }
 
     protected int getMoneyAchievement() {
-        return random.nextInt(100);
+        return 100 + random.nextInt(100);
     }
 }

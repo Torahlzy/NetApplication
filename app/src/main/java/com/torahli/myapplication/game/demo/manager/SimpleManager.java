@@ -4,6 +4,7 @@ import com.torahli.myapplication.game.base.BasePlayer;
 import com.torahli.myapplication.game.base.BaseScean;
 import com.torahli.myapplication.game.person.SimplePlayer;
 import com.torahli.myapplication.game.demo.scean.SimpleScean;
+import com.torahli.myapplication.game.person.bag.BaseBag;
 
 /**
  * 时间管理器
@@ -50,4 +51,19 @@ public class SimpleManager {
         }
     }
 
+    /**
+     * 展示人物背包
+     */
+    public void showPlayerBag() {
+        BaseBag bag = player.getBag();
+        String bagStr;
+        if (bag == null) {
+            bagStr = player.getFullName() + "没有背包";
+        } else {
+            bagStr = player.getFullName() + "的背包：\n" + bag.getDiscription();
+        }
+        if (viewImpl != null) {
+            viewImpl.addsceanRecord(bagStr);
+        }
+    }
 }

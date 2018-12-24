@@ -60,8 +60,8 @@ public class MainGameFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void initView(View view) {
-        View btnNext = view.findViewById(R.id.btn_next);
-        btnNext.setOnClickListener(this);
+        initBtns(view);
+
 
         mainRecyclerview = (RecyclerView) view.findViewById(R.id.game_main_recyclerview);
         adapter = new MainGameFragAdapter();
@@ -84,10 +84,20 @@ public class MainGameFragment extends BaseFragment implements View.OnClickListen
 
     }
 
+    private void initBtns(View view) {
+        View btnNext = view.findViewById(R.id.btn_next);
+        btnNext.setOnClickListener(this);
+        View btnBga = view.findViewById(R.id.btn_bag);
+        btnBga.setOnClickListener(this);
+
+    }
+
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btn_next) {
             simpleManager.next();
+        } else if (view.getId() == R.id.btn_bag) {
+            simpleManager.showPlayerBag();
         }
     }
 }
