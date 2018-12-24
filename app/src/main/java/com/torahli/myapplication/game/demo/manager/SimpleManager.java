@@ -41,6 +41,7 @@ public class SimpleManager {
     public void next() {
         //玩家开始
         player.next();
+        player.nextMonth();
     }
 
     public void sceanRecord(String str) {

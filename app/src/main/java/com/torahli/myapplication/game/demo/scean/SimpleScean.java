@@ -20,7 +20,7 @@ public class SimpleScean extends BaseScean {
 
     @Override
     public String getSceanName() {
-        return "大街";
+        return "武当派";
     }
 
     public ArrayList<BasePerson> getPeople() {
@@ -44,12 +44,18 @@ public class SimpleScean extends BaseScean {
                     if (MakeFriendsAction.canMakeFriends(person, target)) {
                         ((MakeFriendsAction) action).targetPerson = target;
                         action.action();
-                        String sceanRecord = getTime() + person.getFullName() + "在" + getSceanName() + action.getSceanString();
+                        String sceanRecord = getTime() + action.getDescription(this);
                         record(sceanRecord);
                         return true;
                     }
                 }
             }
+        } else {
+            //这些是场景没有限制的动作
+            action.action();
+            String sceanRecord = getTime() + action.getDescription(this);
+            record(sceanRecord);
+            return true;
         }
         return false;
     }

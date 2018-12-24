@@ -2,18 +2,21 @@ package com.torahli.myapplication.game.action;
 
 import com.torahli.myapplication.game.base.BaseAction;
 import com.torahli.myapplication.game.base.BasePerson;
+import com.torahli.myapplication.game.base.BaseScean;
 
 /**
  * 交友动作
  */
 public class MakeFriendsAction extends BaseAction {
+
+    public static final int usedTime = 10;
     public BasePerson targetPerson;
 
     public BasePerson actionPerson;
 
     @Override
-    public String getSceanString() {
-        return "和" + targetPerson.getFullName() + "结为好友";
+    public String getDescription(BaseScean scean) {
+        return actionPerson.getFullName() + "在" + scean.getSceanName() + "和" + targetPerson.getFullName() + "结为好友";
     }
 
     @Override

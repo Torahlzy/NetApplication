@@ -1,11 +1,20 @@
 package com.torahli.myapplication.game.base;
 
+import com.torahli.myapplication.game.person.bag.BaseBag;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public abstract class BasePerson {
+    /**
+     * 朋友
+     */
     private List<BasePerson> friends = new ArrayList<>();
+    /**
+     * 背包
+     */
+    private BaseBag bag;
     private BaseScean mScean;
     private String ming;
     private String xing;
@@ -13,10 +22,18 @@ public abstract class BasePerson {
      * 唯一标识
      */
     private long birthTime;
+    /**
+     * 人物所拥有的时间
+     */
+    protected int remainTime;
 
     public BasePerson() {
         birthTime = getBirthTime();
+        bag = new BaseBag();
+        remainTime = getFullRemainTime();
     }
+
+    protected abstract int getFullRemainTime();
 
     protected long getBirthTime() {
         return System.currentTimeMillis();
@@ -26,6 +43,16 @@ public abstract class BasePerson {
         return ming;
     }
 
+    private void resetRemainTime() {
+        remainTime = getFullRemainTime();
+    }
+
+    /**
+     * 过月事件
+     */
+    public void nextMonth(){
+        resetRemainTime();
+    }
 
     public void setXingMing(String xing, String ming) {
         this.xing = xing;
@@ -40,6 +67,13 @@ public abstract class BasePerson {
         return xing + ming;
     }
 
+    protected void setBag(BaseBag bag) {
+        this.bag = bag;
+    }
+
+    public BaseBag getBag() {
+        return bag;
+    }
 
     public void setScean(BaseScean scean) {
         this.mScean = scean;
@@ -98,6 +132,15 @@ public abstract class BasePerson {
      * @return
      */
     protected boolean canMakeFriendAction() {
+        return false;
+    }
+
+    /**
+     * 能触发工作
+     *
+     * @return
+     */
+    protected boolean canWorkAction() {
         return false;
     }
 }
