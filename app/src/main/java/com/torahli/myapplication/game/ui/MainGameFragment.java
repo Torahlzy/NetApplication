@@ -26,6 +26,7 @@ public class MainGameFragment extends BaseFragment implements View.OnClickListen
         @Override
         public void addsceanRecord(String msg) {
             adapter.addData(msg);
+            mainRecyclerview.smoothScrollToPosition(adapter.getData().size() - 1);
         }
     };
     private EasyRefreshLayout refreshLayout;
@@ -65,9 +66,9 @@ public class MainGameFragment extends BaseFragment implements View.OnClickListen
 
         mainRecyclerview = (RecyclerView) view.findViewById(R.id.game_main_recyclerview);
         adapter = new MainGameFragAdapter();
-        mainRecyclerview.setLayoutManager(new LinearLayoutManager(getNoneNullActivity()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getNoneNullActivity());
+        mainRecyclerview.setLayoutManager(layoutManager);
         mainRecyclerview.setAdapter(adapter);
-
         //下拉刷新
         refreshLayout = (EasyRefreshLayout) view.findViewById(R.id.hk_home_easyrefresh);
         refreshLayout.setLoadMoreModel(LoadModel.NONE);
