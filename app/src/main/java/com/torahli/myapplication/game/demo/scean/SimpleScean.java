@@ -6,6 +6,7 @@ import com.torahli.myapplication.game.base.BasePerson;
 import com.torahli.myapplication.game.base.BaseScean;
 import com.torahli.myapplication.game.demo.manager.SimpleManager;
 import com.torahli.myapplication.game.person.SimpleNpc;
+import com.torahli.myapplication.game.person.factory.NPCFactory;
 
 import java.util.ArrayList;
 
@@ -29,9 +30,13 @@ public class SimpleScean extends BaseScean {
 
     @Override
     public void init() {
-        SimpleNpc a = new SimpleNpc();
-        a.setXingMing("沙", "貂蝉");
-        personArrayList.add(a);
+        //初始化npc
+        for (int i = 0; i < 5; i++) {
+            BasePerson npc = NPCFactory.getInstance().generateOne(null);
+            npc.setScean(this);
+            personArrayList.add(npc);
+        }
+
     }
 
     @Override
@@ -60,7 +65,6 @@ public class SimpleScean extends BaseScean {
         return false;
     }
 
-
     private ArrayList<String> records = new ArrayList<>();
 
     private void record(String msg) {
@@ -68,9 +72,4 @@ public class SimpleScean extends BaseScean {
         SimpleManager.getInstance().sceanRecord(msg);
     }
 
-
-    private void realAction(BasePerson person, BaseAction action) {
-
-
-    }
 }

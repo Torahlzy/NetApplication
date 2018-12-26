@@ -9,6 +9,7 @@ import com.torahli.myapplication.game.base.BaseScean;
 public class SimplePlayer extends BasePlayer {
 
     public SimplePlayer() {
+        super(1);
         setXingMing("太吾", "春");
     }
 

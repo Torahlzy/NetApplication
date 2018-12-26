@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 public abstract class BasePerson {
+    private final int id;
     /**
      * 朋友
      */
@@ -27,7 +28,8 @@ public abstract class BasePerson {
      */
     protected int remainTime;
 
-    public BasePerson() {
+    public BasePerson(int id) {
+        this.id = id;
         birthTime = getBirthTime();
         bag = new BaseBag();
         remainTime = getFullRemainTime();
@@ -50,7 +52,7 @@ public abstract class BasePerson {
     /**
      * 过月事件
      */
-    public void nextMonth(){
+    public void nextMonth() {
         resetRemainTime();
     }
 
@@ -84,6 +86,20 @@ public abstract class BasePerson {
         return mScean;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BasePerson that = (BasePerson) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
+    }
+
     /**
      * 添加一个朋友
      *
@@ -103,20 +119,6 @@ public abstract class BasePerson {
      */
     public boolean isFriend(BasePerson person) {
         return friends.contains(person);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BasePerson that = (BasePerson) o;
-        return birthTime == that.birthTime;
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(birthTime);
     }
 
     /**

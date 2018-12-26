@@ -29,9 +29,10 @@ public class SimpleManager {
     }
 
     private void init() {
-        player = new SimplePlayer();
         scean = new SimpleScean();
         scean.init();
+
+        player = new SimplePlayer();
         player.setScean(scean);
     }
 
