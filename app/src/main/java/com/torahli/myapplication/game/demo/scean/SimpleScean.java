@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class SimpleScean extends BaseScean {
     private int id = 0;
-    private ArrayList<BasePerson> personArrayList = new ArrayList<>();
+    private final ArrayList<BasePerson> personArrayList = new ArrayList<>();
 
     @Override
     public String getTime() {
@@ -37,6 +37,18 @@ public class SimpleScean extends BaseScean {
             personArrayList.add(npc);
         }
 
+    }
+
+    @Override
+    public String getPeopleListForShow() {
+        StringBuilder retStr = new StringBuilder();
+        if (personArrayList.size() > 0) {
+            for (BasePerson person : personArrayList) {
+                retStr.append(person.getFullName() + "\n");
+            }
+            retStr.subSequence(0, retStr.length() - 1);
+        }
+        return retStr.toString();
     }
 
     @Override

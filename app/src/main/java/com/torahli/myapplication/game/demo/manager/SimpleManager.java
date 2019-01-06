@@ -12,7 +12,7 @@ import com.torahli.myapplication.game.person.bag.BaseBag;
 public class SimpleManager {
 
     public static interface IView {
-        void addsceanRecord(String msg);
+        void addsceanRecord(CharSequence msg);
     }
 
     private static SimpleManager instance = new SimpleManager();
@@ -65,6 +65,16 @@ public class SimpleManager {
         }
         if (viewImpl != null) {
             viewImpl.addsceanRecord(bagStr);
+        }
+    }
+
+    /**
+     * 展示当前场景中的人物
+     */
+    public void showCurrentSceanPeople() {
+        String peopleStr = scean.getPeopleListForShow();
+        if (viewImpl != null) {
+            viewImpl.addsceanRecord(peopleStr);
         }
     }
 }

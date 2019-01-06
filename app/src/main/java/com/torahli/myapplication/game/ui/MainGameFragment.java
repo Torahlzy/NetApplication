@@ -24,7 +24,7 @@ public class MainGameFragment extends BaseFragment implements View.OnClickListen
     private SimpleManager simpleManager;
     private SimpleManager.IView simpleViewImpl = new SimpleManager.IView() {
         @Override
-        public void addsceanRecord(String msg) {
+        public void addsceanRecord(CharSequence msg) {
             adapter.addData(msg);
             mainRecyclerview.smoothScrollToPosition(adapter.getData().size() - 1);
         }
@@ -90,6 +90,8 @@ public class MainGameFragment extends BaseFragment implements View.OnClickListen
         btnNext.setOnClickListener(this);
         View btnBga = view.findViewById(R.id.btn_bag);
         btnBga.setOnClickListener(this);
+        View btnpeople = view.findViewById(R.id.btn_people);
+        btnpeople.setOnClickListener(this);
 
     }
 
@@ -99,6 +101,8 @@ public class MainGameFragment extends BaseFragment implements View.OnClickListen
             simpleManager.next();
         } else if (view.getId() == R.id.btn_bag) {
             simpleManager.showPlayerBag();
+        } else if (view.getId() == R.id.btn_people) {
+            simpleManager.showCurrentSceanPeople();
         }
     }
 }

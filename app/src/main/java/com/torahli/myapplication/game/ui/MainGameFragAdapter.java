@@ -39,7 +39,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-public class MainGameFragAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
+public class MainGameFragAdapter extends BaseQuickAdapter<CharSequence, BaseViewHolder> {
 
     public MainGameFragAdapter() {
         super(R.layout.item_game_text);
@@ -47,7 +47,7 @@ public class MainGameFragAdapter extends BaseQuickAdapter<String, BaseViewHolder
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, String item) {
+    protected void convert(BaseViewHolder helper, CharSequence item) {
         TextView tv = helper.getView(R.id.tv_game);
         tv.setText(item);
     }

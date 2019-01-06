@@ -8,4 +8,6 @@ public abstract class BaseScean {
     public abstract boolean action(BasePerson person, BaseAction action);
 
     public abstract void init();
+
+    public abstract String getPeopleListForShow();
 }

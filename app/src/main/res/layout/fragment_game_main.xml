@@ -23,6 +23,12 @@
             android:layout_height="wrap_content"
             android:text="背包" />
 
+        <Button
+            android:id="@+id/btn_people"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="附近人物" />
+
     </LinearLayout>
 
     <com.ajguan.library.EasyRefreshLayout
