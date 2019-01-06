@@ -1,6 +1,11 @@
 package com.torahli.myapplication.game.base;
 
+import com.torahli.myapplication.game.demo.manager.event.MonthFinishEvent;
+import com.torahli.myapplication.game.demo.manager.event.TimeFlyingEvent;
 import com.torahli.myapplication.game.person.bag.BaseBag;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +57,8 @@ public abstract class BasePerson {
     /**
      * 过月事件
      */
-    public void nextMonth() {
+    @Subscribe
+    public void onMonthFinishEvent(MonthFinishEvent event) {
         resetRemainTime();
     }
 
@@ -124,7 +130,8 @@ public abstract class BasePerson {
     /**
      * 执行
      */
-    public void next() {
+    @Subscribe
+    public void next(TimeFlyingEvent event) {
 
     }
 
@@ -144,5 +151,19 @@ public abstract class BasePerson {
      */
     protected boolean canWorkAction() {
         return false;
+    }
+
+    /**
+     * 初始化该对象
+     */
+    public void init() {
+        EventBus.getDefault().register(this);
+    }
+
+    /**
+     * 回收该对象
+     */
+    public void recycle() {
+        EventBus.getDefault().unregister(this);
     }
 }

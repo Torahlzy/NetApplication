@@ -5,7 +5,6 @@ import com.torahli.myapplication.game.base.BaseAction;
 import com.torahli.myapplication.game.base.BasePerson;
 import com.torahli.myapplication.game.base.BaseScean;
 import com.torahli.myapplication.game.demo.manager.SimpleManager;
-import com.torahli.myapplication.game.person.SimpleNpc;
 import com.torahli.myapplication.game.person.factory.NPCFactory;
 
 import java.util.ArrayList;
@@ -34,9 +33,9 @@ public class SimpleScean extends BaseScean {
         for (int i = 0; i < 5; i++) {
             BasePerson npc = NPCFactory.getInstance().generateOne(null);
             npc.setScean(this);
+            npc.init();
             personArrayList.add(npc);
         }
-
     }
 
     @Override

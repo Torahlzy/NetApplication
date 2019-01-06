@@ -2,9 +2,13 @@ package com.torahli.myapplication.game.demo.manager;
 
 import com.torahli.myapplication.game.base.BasePlayer;
 import com.torahli.myapplication.game.base.BaseScean;
-import com.torahli.myapplication.game.person.SimplePlayer;
+import com.torahli.myapplication.game.demo.manager.event.MonthFinishEvent;
+import com.torahli.myapplication.game.demo.manager.event.TimeFlyingEvent;
 import com.torahli.myapplication.game.demo.scean.SimpleScean;
+import com.torahli.myapplication.game.person.SimplePlayer;
 import com.torahli.myapplication.game.person.bag.BaseBag;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * 时间管理器
@@ -34,6 +38,7 @@ public class SimpleManager {
 
         player = new SimplePlayer();
         player.setScean(scean);
+        player.init();
     }
 
     public void setViewImpl(IView viewImpl) {
@@ -41,9 +46,10 @@ public class SimpleManager {
     }
 
     public void next() {
-        //玩家开始
-        player.next();
-        player.nextMonth();
+        //处理过月事件
+        EventBus.getDefault().post(new TimeFlyingEvent());
+        //过月完成
+        EventBus.getDefault().post(new MonthFinishEvent());
     }
 
     public void sceanRecord(String str) {
@@ -72,7 +78,7 @@ public class SimpleManager {
      * 展示当前场景中的人物
      */
     public void showCurrentSceanPeople() {
-        String peopleStr = scean.getPeopleListForShow();
+        String peopleStr = scean.getSceanName() + " 场景有：\n" + scean.getPeopleListForShow();
         if (viewImpl != null) {
             viewImpl.addsceanRecord(peopleStr);
         }

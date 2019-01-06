@@ -1,8 +1,8 @@
 package com.torahli.myapplication.game.person;
 
-import com.torahli.myapplication.game.base.BasePerson;
+import com.torahli.myapplication.game.person.npc.BaseNPC;
 
-public class SimpleNpc extends BasePerson {
+public class SimpleNpc extends BaseNPC {
     public SimpleNpc(int id) {
         super(id);
     }
