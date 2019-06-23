@@ -6,7 +6,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 import com.torahli.myapplication.AppConfig;
 import com.torahli.myapplication.MainApplication;
@@ -17,6 +16,12 @@ import java.io.File;
 import javax.annotation.Nonnull;
 
 public class SystemUtil {
+    /**
+     * 宽度填充时，高度应该多少
+     * @param width
+     * @param ratio
+     * @return
+     */
     public static int getWrapHeightForMatchWidth(int width, Float ratio) {
         return (int) (width * ratio);
     }
@@ -63,7 +68,6 @@ public class SystemUtil {
      * 获得当前app版本号
      *
      * @return
-     * @throws Exception
      */
     public static int getAppVersionCode() {
         MainApplication context = MainApplication.getApplication();

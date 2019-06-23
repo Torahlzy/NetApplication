@@ -44,6 +44,11 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_topic_content"
             android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name=".hkbc.topiccontent.portrait.TopicContentPortraitActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_topic_content"
+            android:theme="@style/FullscreenTheme" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
