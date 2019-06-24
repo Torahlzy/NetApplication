@@ -35,7 +35,7 @@ public class TextTopicListParser {
                     topic.setAuthor(author);
                     list.add(topic);
                 } else {
-                    Tlog.d("torahlog", "--cell:" + cell);
+                    Tlog.d("torahlog", "--跳过条目\n:" + cell);
                 }
             }
         }

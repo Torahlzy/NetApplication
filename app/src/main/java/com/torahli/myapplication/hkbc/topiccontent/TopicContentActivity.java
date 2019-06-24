@@ -19,6 +19,7 @@ import com.bumptech.glide.RequestManager;
 import com.torahli.myapplication.R;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
+import com.torahli.myapplication.hkbc.NavigationUtil;
 import com.torahli.myapplication.hkbc.databean.ILink;
 import com.torahli.myapplication.hkbc.topiccontent.bean.TopicContent;
 
@@ -28,7 +29,7 @@ import javax.annotation.Nonnull;
  * 主题详情页
  */
 public class TopicContentActivity extends BaseActivity {
-    public static final String INTENT_LINK = "INTENT_LINK";
+    public static final String INTENT_LINK = NavigationUtil.INTENT_LINK;
     private String mlink;
     @Nonnull
     private TopicContentViewModel topicContentViewModel;
@@ -39,17 +40,6 @@ public class TopicContentActivity extends BaseActivity {
     private ProgressBar mPageProgress;
     private TextView mTvCurpage;
     private int maxSize;
-
-    /**
-     * 启动主题详情页
-     *
-     * @param context
-     */
-    public static void startTopicContentActivity(Context context, ILink link) {
-        Intent intent = new Intent(context, TopicContentActivity.class);
-        intent.putExtra(INTENT_LINK, link.getLink());
-        context.startActivity(intent);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

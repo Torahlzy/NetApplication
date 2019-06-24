@@ -13,9 +13,9 @@ import com.torahli.myapplication.framwork.GlideApp;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.fragment.BaseFragment;
 import com.torahli.myapplication.framwork.util.SystemUtil;
+import com.torahli.myapplication.hkbc.NavigationUtil;
 import com.torahli.myapplication.hkbc.databean.Topic;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
-import com.torahli.myapplication.hkbc.topiccontent.TopicContentActivity;
 
 public class TopicListAdapter extends BaseQuickAdapter<Topic, BaseViewHolder> {
     private final BaseFragment fragment;
@@ -36,7 +36,7 @@ public class TopicListAdapter extends BaseQuickAdapter<Topic, BaseViewHolder> {
         if (Tlog.isShowLogCat()) {
             Tlog.i(TAG, "准备打开主题列表--- topic:" + topic);
         }
-        TopicContentActivity.startTopicContentActivity(fragment.getActivity(), topic);
+        NavigationUtil.startPicContent(fragment.getActivity(), topic);
     }
 
     @Override

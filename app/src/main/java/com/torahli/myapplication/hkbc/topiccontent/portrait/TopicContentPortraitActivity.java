@@ -2,8 +2,6 @@ package com.torahli.myapplication.hkbc.topiccontent.portrait;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
@@ -20,7 +18,7 @@ import com.bumptech.glide.RequestManager;
 import com.torahli.myapplication.R;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
-import com.torahli.myapplication.hkbc.databean.ILink;
+import com.torahli.myapplication.hkbc.NavigationUtil;
 import com.torahli.myapplication.hkbc.topiccontent.TopicContentViewModel;
 import com.torahli.myapplication.hkbc.topiccontent.bean.TopicContent;
 
@@ -30,7 +28,7 @@ import javax.annotation.Nonnull;
  * 图片列表页_纵向
  */
 public class TopicContentPortraitActivity extends BaseActivity {
-    public static final String INTENT_LINK = "INTENT_LINK";
+    public static final String INTENT_LINK = NavigationUtil.INTENT_LINK;
     private String mlink;
     @Nonnull
     private TopicContentViewModel topicContentViewModel;
@@ -42,17 +40,6 @@ public class TopicContentPortraitActivity extends BaseActivity {
     private TextView mTvCurpage;
     private int maxSize;
     private LinearLayoutManager layoutManager;
-
-    /**
-     * 启动主题详情页
-     *
-     * @param context
-     */
-    public static void startTopicContentActivity(Context context, ILink link) {
-        Intent intent = new Intent(context, TopicContentPortraitActivity.class);
-        intent.putExtra(INTENT_LINK, link.getLink());
-        context.startActivity(intent);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

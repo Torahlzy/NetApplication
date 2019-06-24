@@ -24,7 +24,6 @@ import com.torahli.myapplication.hkbc.databean.Topic;
 import com.torahli.myapplication.hkbc.home.bean.Banners;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 import com.torahli.myapplication.hkbc.support.BannerGlideImageLoader;
-import com.torahli.myapplication.hkbc.topiccontent.portrait.TopicContentPortraitActivity;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.listener.OnBannerListener;
@@ -166,7 +165,7 @@ public class HomeAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, Base
         if (Tlog.isShowLogCat()) {
             Tlog.i(TAG, "准备打开 --- link:" + link);
         }
-        TopicContentPortraitActivity.startTopicContentActivity(homePageFragment.getActivity(), link);
+        NavigationUtil.startPicContent(homePageFragment.getActivity(), link);
     }
 
     private void convertForBanners(BaseViewHolder helper, final Banners bannerData) {
