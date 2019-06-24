@@ -34,9 +34,7 @@ public class Tlog {
     }
 
     public static void printException(String tag, Throwable throwable) {
-        if (showLogCat) {
-            Log.e(tag + AppConfig.TAG_APPEND, Log.getStackTraceString(throwable));
-        }
+        Log.e(tag + AppConfig.TAG_APPEND, Log.getStackTraceString(throwable));
     }
 
 

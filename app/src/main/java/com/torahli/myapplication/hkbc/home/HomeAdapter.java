@@ -54,8 +54,10 @@ public class HomeAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, Base
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 MultiItemEntity multiItemEntity = getData().get(position);
-                if (multiItemEntity instanceof Topic) {
+                if (multiItemEntity.getItemType() == ItemType.PicTopicList) {
                     jumpTopicListPage((Topic) multiItemEntity);
+                } else if (multiItemEntity.getItemType() == ItemType.TextTopic) {
+                    jumpTextTopicListPage((Topic) multiItemEntity);
                 } else {
                     if (Tlog.isShowLogCat()) {
                         Tlog.w(TAG, "onItemClick --- multiItemEntity:" + multiItemEntity);
@@ -115,13 +117,24 @@ public class HomeAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, Base
      * @param entity
      */
     private void jumpTopicListPage(Topic entity) {
-        NavigationUtil.startTopicList(
+        NavigationUtil.startPicTopicList(
+                homePageFragment, entity.getLink(), entity.getTitle());
+    }
+
+    /**
+     * 打开文字列表样式的页面
+     *
+     * @param entity
+     */
+    private void jumpTextTopicListPage(Topic entity) {
+        NavigationUtil.startTextTopicList(
                 homePageFragment, entity.getLink(), entity.getTitle());
     }
 
     private void initType() {
         addItemType(ItemType.Banners, R.layout.fragment_hk_item_banners);
-        addItemType(ItemType.Topic, R.layout.fragment_hk_item_topic);
+        addItemType(ItemType.PicTopicList, R.layout.fragment_hk_item_topic);
+        addItemType(ItemType.TextTopic, R.layout.fragment_hk_item_topic);
     }
 
     @Override
@@ -131,9 +144,13 @@ public class HomeAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, Base
                 Banners banners = (Banners) item;
                 convertForBanners(helper, banners);
                 break;
-            case ItemType.Topic:
+            case ItemType.PicTopicList:
                 Topic topic = (Topic) item;
                 convertForTopic(helper, topic);
+                break;
+            case ItemType.TextTopic:
+                Topic customTopic = (Topic) item;
+                convertForTopic(helper, customTopic);
                 break;
             default:
                 break;
@@ -149,7 +166,7 @@ public class HomeAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, Base
         if (Tlog.isShowLogCat()) {
             Tlog.i(TAG, "准备打开 --- link:" + link);
         }
-       TopicContentPortraitActivity.startTopicContentActivity(homePageFragment.getActivity(), link);
+        TopicContentPortraitActivity.startTopicContentActivity(homePageFragment.getActivity(), link);
     }
 
     private void convertForBanners(BaseViewHolder helper, final Banners bannerData) {

@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.bean.NetErrorType;
 import com.torahli.myapplication.framwork.vm.BaseViewModel;
+import com.torahli.myapplication.hkbc.databean.TextTopic;
 import com.torahli.myapplication.hkbc.home.bean.HomePage;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 
@@ -35,7 +36,10 @@ public class HomePageViewModel extends BaseViewModel {
                         if (Tlog.isShowLogCat()) {
                             Tlog.d(TAG, "apply --- 首页数据长度:" + s.length());
                         }
-                        return HomePageParser.INSTANCE.parseTopics(doc);
+                        HomePage homePage = HomePageParser.INSTANCE.parseTopics(doc);
+                        //添加一个自定义的连接
+                        homePage.addCustomEntity(TextTopic.newInnerComicGuideLink());
+                        return homePage;
                     }
                 }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

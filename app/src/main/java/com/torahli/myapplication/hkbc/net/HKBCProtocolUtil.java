@@ -12,7 +12,7 @@ import retrofit2.http.FieldMap;
  * 网络协议
  */
 public class HKBCProtocolUtil extends ProtocolUtil {
-    public static String BASEURL = "";//http://hkbbcc.xyz/";
+    public static String BASEURL = "";
 
     /**
      * 主页

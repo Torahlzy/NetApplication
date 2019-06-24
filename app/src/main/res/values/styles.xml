@@ -37,4 +37,14 @@
         <item name="android:layout_margin">4dp</item>
         <item name="android:foreground">?android:attr/selectableItemBackgroundBorderless</item>
     </style>
+
+    <style name="AppTextView_title" >
+        <item name="android:textSize">@dimen/text_title</item>
+    </style>
+    <style name="AppTextView_content" >
+        <item name="android:textSize">@dimen/text_normal</item>
+    </style>
+    <style name="AppTextView_second" >
+        <item name="android:textSize">@dimen/text_small</item>
+    </style>
 </resources>

@@ -14,6 +14,8 @@ public class HomePage extends BaseLiveData {
     @Nonnull
     private List<Topic> topicList = new ArrayList<>();
 
+    private List<MultiItemEntity> customList = new ArrayList<>();
+
     private Banners banners1;
 
     public HomePage setError(int error, String msg) {
@@ -36,6 +38,7 @@ public class HomePage extends BaseLiveData {
             entityList.add(banners1);
         }
         entityList.addAll(topicList);
+        entityList.addAll(customList);
         return entityList;
     }
 
@@ -48,6 +51,11 @@ public class HomePage extends BaseLiveData {
             this.topicList.clear();
             this.topicList.addAll(topics);
         }
+        return this;
+    }
+
+    public HomePage addCustomEntity(MultiItemEntity entity) {
+        customList.add(entity);
         return this;
     }
 

@@ -4,7 +4,7 @@ import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.torahli.myapplication.hkbc.home.ItemType;
 
 /**
- * 主题。
+ * 主题。该对象不只用在首页。用在非首页时，getItemType是没有指导意义的
  */
 public class Topic implements MultiItemEntity, ILink {
     private String title;
@@ -18,6 +18,10 @@ public class Topic implements MultiItemEntity, ILink {
     private String picUrl;
 
     private String timeStr;
+    /**
+     * 作者
+     */
+    private String author;
 
     public Topic(String title, String picUrl, String link) {
         this.title = title;
@@ -31,6 +35,14 @@ public class Topic implements MultiItemEntity, ILink {
 
     public void setTimeStr(String timeStr) {
         this.timeStr = timeStr;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getTitle() {
@@ -64,11 +76,13 @@ public class Topic implements MultiItemEntity, ILink {
 
     @Override
     public int getItemType() {
-        return ItemType.Topic;
+        return ItemType.PicTopicList;
     }
 
     @Override
     public String getLink() {
         return link;
     }
+
+
 }
