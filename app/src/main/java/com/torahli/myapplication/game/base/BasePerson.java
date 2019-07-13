@@ -29,9 +29,27 @@ public abstract class BasePerson {
      */
     private long birthTime;
     /**
-     * 人物所拥有的时间
+     * 人物每个行动区间所拥有的时间
      */
     protected int remainTime;
+
+    protected int hp;
+    /**
+     * 生命值上限
+     */
+    protected int hpLimit;
+    protected int sp;
+    protected int spLimit;
+    protected long currentExp;
+
+    protected int currentLevel;
+
+
+    /**
+     * 物理攻击力
+     */
+    protected int hpDamage;
+
 
     public BasePerson(int id) {
         this.id = id;
