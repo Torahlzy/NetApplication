@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="24dp">
+    android:paddingBottom="48dp">
 
     <com.ajguan.library.EasyRefreshLayout
         android:id="@+id/hk_home_easyrefresh"

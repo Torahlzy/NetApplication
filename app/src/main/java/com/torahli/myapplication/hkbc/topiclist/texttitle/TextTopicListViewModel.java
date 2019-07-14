@@ -6,11 +6,14 @@ import android.text.TextUtils;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.bean.NetErrorType;
 import com.torahli.myapplication.framwork.vm.BaseViewModel;
+import com.torahli.myapplication.hkbc.databean.Topic;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 import com.torahli.myapplication.hkbc.topiclist.bean.TopicList;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -27,12 +30,37 @@ public class TextTopicListViewModel extends BaseViewModel {
     MutableLiveData<TopicList> liveData;
     private LinkedHashMap<String, String> otherPages;
     private int nextIndex;//下一个网址在map中的索引。访问网络成功时再加
+    private List<Topic> mTopics;
 
     public MutableLiveData<TopicList> getTopicListLiveData() {
         if (liveData == null) {
             liveData = new MutableLiveData<>();
         }
         return liveData;
+    }
+
+    public void filter(int type) {
+        if (mTopics != null && mTopics.size() > 0) {
+            List<Topic> newTopicList = new ArrayList<>();
+
+            if (type == 1) {
+                for (Topic topic : mTopics) {
+                    if (!TextUtils.isEmpty(topic.getTitle())) {
+                        if (topic.getTitle().contains("在线") ||
+                                topic.getTitle().contains("在線")) {
+                            newTopicList.add(topic);
+                        }
+                    }
+                }
+            } else {
+                newTopicList.addAll(mTopics);
+            }
+            TopicList value = getTopicListLiveData().getValue();
+            if (value != null) {
+                value.setTopicList(newTopicList);
+            }
+            liveData.setValue(value);
+        }
     }
 
     /**
@@ -76,10 +104,13 @@ public class TextTopicListViewModel extends BaseViewModel {
                 }).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DefaultSubscriber<TopicList>() {
 
+
                     @Override
                     public void onNext(TopicList topicContent) {
                         topicContent.setInit(isInit);
+                        mTopics = new ArrayList<>(topicContent.getTopicList());
                         liveData.setValue(topicContent);
+                        //todo 过滤type
                         if (isInit) {
                             otherPages = topicContent.getOtherPages();
                         }

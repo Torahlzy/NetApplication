@@ -26,7 +26,7 @@ public class NavigationUtil {
      */
     public static void startTextTopicList(BaseFragment fragment, String link, String title) {
         fragment.extraTransaction()
-                .start(TextTitleListFragment.newInstance(fragment.getNoneNullActivity(), link, title));
+                .start(TextTitleListFragment.newInstance(link, title));
     }
 
     /**
