@@ -7,22 +7,29 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.torahli.myapplication.R;
-import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
 import com.torahli.myapplication.hkbc.NavigationUtil;
-import com.torahli.myapplication.hkbc.topiccontent.TopicContentViewModel;
-import com.torahli.myapplication.hkbc.topiccontent.bean.TopicContent;
+import com.torahli.myapplication.pic.selectdir.ListDirModel;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nonnull;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * 图片列表页_纵向
@@ -31,7 +38,7 @@ public class TopicContentPortraitActivity extends BaseActivity {
     public static final String INTENT_LINK = NavigationUtil.INTENT_LINK;
     private String mlink;
     @Nonnull
-    private TopicContentViewModel topicContentViewModel;
+    private ListDirModel topicContentViewModel;
     private RecyclerView mImgRecyclerView;
     @Nonnull
     protected RequestManager activityGlide;
@@ -72,22 +79,11 @@ public class TopicContentPortraitActivity extends BaseActivity {
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mImgRecyclerView.setLayoutManager(layoutManager);
         mImgRecyclerView.setAdapter(pagerAdapter);
-        topicContentViewModel = ViewModelProviders.of(this).get(TopicContentViewModel.class);
-        topicContentViewModel.getContentLiveData().observe(this, new Observer<TopicContent>() {
+        topicContentViewModel = ViewModelProviders.of(this).get(ListDirModel.class);
+        topicContentViewModel.getTopicListLiveData().observe(this, new Observer<List<File>>() {
             @Override
-            public void onChanged(@Nullable TopicContent topicContent) {
-                if (Tlog.isShowLogCat()) {
-                    Tlog.d(TAG, "onChanged --- topicContent:" + topicContent);
-                }
-                mPageProgress.setVisibility(View.GONE);
-                if (topicContent != null && !topicContent.isError()) {
-                    pagerAdapter.setNewData(topicContent.getImgList());
-//                    pagerAdapter.notifyDataSetChanged();
-                    maxSize = topicContent.getImgList().size();
-                    mTvCurpage.setText("1/" + maxSize);
-                } else {
-                    Toast.makeText(TopicContentPortraitActivity.this, "获取详情失败", Toast.LENGTH_SHORT).show();
-                }
+            public void onChanged(@Nullable List<File> files) {
+                filterPicsAndSetData(files);
             }
         });
 
@@ -109,8 +105,46 @@ public class TopicContentPortraitActivity extends BaseActivity {
         });
     }
 
+    /**
+     * 筛选图片并且设置数据
+     *
+     * @param files
+     */
+    private void filterPicsAndSetData(List<File> files) {
+        Disposable subscribe = Observable.just(files)
+                .map(new Function<List<File>, List<File>>() {
+                    @Override
+                    public List<File> apply(List<File> files) throws Exception {
+                        List<File> ret = new ArrayList<>();
+                        for (File file : files) {
+                            if (!file.isDirectory()) {
+                                if (file.getName().endsWith(".jpg") ||
+                                        file.getName().endsWith(".bmp") ||
+                                        file.getName().endsWith(".png")) {
+                                    ret.add(file);
+                                }
+                            }
+                        }
+                        return ret;
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<File>>() {
+                    @Override
+                    public void accept(List<File> s) throws Exception {
+                        ArrayList<File> arrayList = new ArrayList<File>(s);
+                        pagerAdapter.setNewData(arrayList);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                    }
+                });
+    }
+
     private void initData() {
-        topicContentViewModel.initData(mlink);
+        topicContentViewModel.loadDirFile(new File(mlink));
     }
 
     @Override

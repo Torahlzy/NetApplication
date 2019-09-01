@@ -18,53 +18,31 @@ import com.torahli.myapplication.R;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
 import com.torahli.myapplication.framwork.util.SystemUtil;
-import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 
+import java.io.File;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import me.jessyan.progressmanager.ProgressListener;
-import me.jessyan.progressmanager.ProgressManager;
-import me.jessyan.progressmanager.body.ProgressInfo;
-
-public class PhotoListQuickAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
+public class PhotoListQuickAdapter extends BaseQuickAdapter<File, BaseViewHolder> {
 
     @Nonnull
     private final RequestManager activityGlide;
 
-    public PhotoListQuickAdapter(@Nullable List<String> data, @Nonnull RequestManager activityGlide) {
+    public PhotoListQuickAdapter(@Nullable List<File> data, @Nonnull RequestManager activityGlide) {
         super(R.layout.pager_photoview, data);
         this.activityGlide = activityGlide;
     }
 
     @Override
-    protected void convert(final BaseViewHolder helper, String item) {
+    protected void convert(final BaseViewHolder helper, File item) {
         final PhotoView photoView = helper.getView(R.id.photoview_photo);
         final NumberProgressBar progressBar = helper.getView(R.id.pb_photo_load_progress);
-        String url = HKBCProtocolUtil.getWholeUrl(item);
-        progressBar.setVisibility(View.VISIBLE);
-        // Glide 下载监听
-        ProgressManager.getInstance().addResponseListener(url, new ProgressListener() {
-            @Override
-            public void onProgress(ProgressInfo progressInfo) {
-                int progress = (int) (progressInfo.getCurrentbytes() * 100 / progressInfo.getContentLength());
-                progressBar.setMax(100);
-                progressBar.setProgress(progress);
-                if (progressInfo.isFinish()) {
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
 
-            @Override
-            public void onError(long id, Exception e) {
-                progressBar.setVisibility(View.GONE);
-            }
-        });
-        Tlog.d("torahlog", "PhotoListQuickAdapter.convert(..)--url:" + url);
+        Tlog.d("torahlog", "PhotoListQuickAdapter.convert(..)--url:" + item);
 
         //glide加载
-        activityGlide.load(url).into(new DrawableImageViewTarget(photoView) {
+        activityGlide.load(item).into(new DrawableImageViewTarget(photoView) {
             @Override
             public void onLoadFailed(@Nullable Drawable errorDrawable) {
                 super.onLoadFailed(errorDrawable);

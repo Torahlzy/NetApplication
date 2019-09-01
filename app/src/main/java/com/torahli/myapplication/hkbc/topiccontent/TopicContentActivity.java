@@ -8,20 +8,19 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.torahli.myapplication.R;
-import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
-import com.torahli.myapplication.hkbc.NavigationUtil;
+import com.torahli.myapplication.pic.selectdir.ListDirModel;
 import com.torahli.myapplication.hkbc.databean.ILink;
-import com.torahli.myapplication.hkbc.topiccontent.bean.TopicContent;
+
+import java.io.File;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -29,10 +28,10 @@ import javax.annotation.Nonnull;
  * 主题详情页
  */
 public class TopicContentActivity extends BaseActivity {
-    public static final String INTENT_LINK = NavigationUtil.INTENT_LINK;
+    public static final String INTENT_LINK = "INTENT_LINK";
     private String mlink;
     @Nonnull
-    private TopicContentViewModel topicContentViewModel;
+    private ListDirModel topicContentViewModel;
     private ViewPager mViewPager;
     @Nonnull
     protected RequestManager activityGlide;
@@ -41,10 +40,21 @@ public class TopicContentActivity extends BaseActivity {
     private TextView mTvCurpage;
     private int maxSize;
 
+    /**
+     * 启动主题详情页
+     *
+     * @param context
+     */
+    public static void startTopicContentActivity(Context context, ILink link) {
+        Intent intent = new Intent(context, TopicContentActivity.class);
+        intent.putExtra(INTENT_LINK, link.getLink());
+        context.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,  WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_topic_content);
         activityGlide = Glide.with(this);
 
@@ -70,22 +80,11 @@ public class TopicContentActivity extends BaseActivity {
 
         pagerAdapter = new PhotoViewPagerAdapter(null, activityGlide, getLayoutInflater());
         mViewPager.setAdapter(pagerAdapter);
-        topicContentViewModel = ViewModelProviders.of(this).get(TopicContentViewModel.class);
-        topicContentViewModel.getContentLiveData().observe(this, new Observer<TopicContent>() {
+        topicContentViewModel = ViewModelProviders.of(this).get(ListDirModel.class);
+        topicContentViewModel.getTopicListLiveData().observe(this, new Observer<List<File>>() {
             @Override
-            public void onChanged(@Nullable TopicContent topicContent) {
-                if (Tlog.isShowLogCat()) {
-                    Tlog.d(TAG, "onChanged --- topicContent:" + topicContent);
-                }
-                mPageProgress.setVisibility(View.GONE);
-                if (topicContent != null && !topicContent.isError()) {
-                    pagerAdapter.setNewData(topicContent.getImgList());
-                    pagerAdapter.notifyDataSetChanged();
-                    maxSize = topicContent.getImgList().size();
-                    mTvCurpage.setText("1/" + maxSize);
-                } else {
-                    Toast.makeText(TopicContentActivity.this, "获取详情失败", Toast.LENGTH_SHORT).show();
-                }
+            public void onChanged(@Nullable List<File> files) {
+
             }
         });
 
@@ -108,7 +107,7 @@ public class TopicContentActivity extends BaseActivity {
     }
 
     private void initData() {
-        topicContentViewModel.initData(mlink);
+        topicContentViewModel.loadDirFile(new File(mlink));
     }
 
     @Override

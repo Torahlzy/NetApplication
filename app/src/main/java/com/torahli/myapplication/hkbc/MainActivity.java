@@ -36,7 +36,7 @@ import com.torahli.myapplication.framwork.GlideApp;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
 import com.torahli.myapplication.framwork.util.SystemUtil;
-import com.torahli.myapplication.hkbc.home.HomePageFragment;
+import com.torahli.myapplication.pic.ui.MainGameFragment;
 import com.torahli.myapplication.hkbc.login.LoginActivity;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 import com.torahli.myapplication.hkbc.setting.SettingsActivity;
@@ -251,8 +251,8 @@ public class MainActivity extends BaseActivity
     }
 
     private void initHome() {
-        if (findFragment(HomePageFragment.class) == null) {
-            loadRootFragment(R.id.hk_main_content, HomePageFragment.newInstance(this));
+        if (findFragment(MainGameFragment.class) == null) {
+            loadRootFragment(R.id.hk_main_content, MainGameFragment.newInstance(this));
         }
     }
 
