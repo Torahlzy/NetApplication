@@ -3,11 +3,13 @@ package com.torahli.myapplication.hkbc.login;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 import com.f2prateek.rx.preferences2.RxSharedPreferences;
 import com.torahli.myapplication.MainApplication;
 import com.torahli.myapplication.app.sharedpreferences.SharedPrefsKey;
 import com.torahli.myapplication.framwork.Tlog;
+import com.torahli.myapplication.framwork.bean.IResultListener;
 import com.torahli.myapplication.framwork.bean.NetErrorType;
 import com.torahli.myapplication.framwork.vm.BaseViewModel;
 import com.torahli.myapplication.hkbc.login.bean.LoginResult;
@@ -40,7 +42,7 @@ public class LoginViewModel extends BaseViewModel {
         return loginResultLiveData;
     }
 
-    public void startLogin(final String account, final String password) {
+    public void startLogin(final String account, final String password, final IResultListener<String> listener) {
         Map<String, String> params = new HashMap<String, String>(6);
         params.put("fastloginfield", "username");
         params.put("username", account);
@@ -60,15 +62,19 @@ public class LoginViewModel extends BaseViewModel {
                 if (Tlog.isShowLogCat()) {
                     Tlog.d(TAG, "onNext --- result:" + result);
                 }
-                loginResultLiveData.setValue(result);
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainApplication.getApplication());
-                RxSharedPreferences rxPreferences = RxSharedPreferences.create(preferences);
-                Flowable.just(account)
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(rxPreferences.getString(SharedPrefsKey.username).asConsumer());
-                Flowable.just(password)
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(rxPreferences.getString(SharedPrefsKey.password).asConsumer());
+                if (loginResultLiveData != null) {
+                    loginResultLiveData.setValue(result);//更新livedata
+                }
+                if (result == null || !result.isSucceed()) {
+                    String errorMsg = result != null ? result.getLoginMsg() : "登陆失败";
+                    if (listener != null) {
+                        listener.onError(null, errorMsg);
+                    }
+                } else {
+                    if (listener != null) {
+                        listener.onSucceed("登陆成功");
+                    }
+                }
             }
 
             @Override

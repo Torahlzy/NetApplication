@@ -237,13 +237,13 @@ public class MainActivity extends BaseActivity
                                     .circleCrop()
                                     .into(headImage);
                             userContent.setText(userinfo.getUserDetails());
-                            showTips("欢迎回来，" + userinfo.getUserName());
+//                            showTips("欢迎回来，" + userinfo.getUserName());
                         } else {
                             hasLogin = false;
                             userName.setText(R.string.myapp_name);
                             headImage.setImageResource(R.drawable.ic_default_user);
                             userContent.setText(R.string.app_login_tip);
-                            showTips("请在侧边栏登录，否则部分帖子可能加载失败");
+//                            showTips("请在侧边栏登录，否则部分帖子可能加载失败");
                         }
 
                     }

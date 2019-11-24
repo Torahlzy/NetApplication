@@ -3,6 +3,7 @@ package com.torahli.myapplication.hkbc.home;
 import android.arch.lifecycle.MutableLiveData;
 
 import com.torahli.myapplication.framwork.Tlog;
+import com.torahli.myapplication.framwork.bean.IResultListener;
 import com.torahli.myapplication.framwork.bean.NetErrorType;
 import com.torahli.myapplication.framwork.vm.BaseViewModel;
 import com.torahli.myapplication.hkbc.databean.TextTopic;
@@ -27,7 +28,7 @@ public class HomePageViewModel extends BaseViewModel {
         return homePageLiveData;
     }
 
-    public void initData() {
+    public void initData(final IResultListener<HomePage> listener) {
         HKBCProtocolUtil.getHomePage()
                 .map(new Function<String, HomePage>() {
                     @Override
@@ -46,14 +47,24 @@ public class HomePageViewModel extends BaseViewModel {
                 .subscribe(new DefaultSubscriber<HomePage>() {
                     @Override
                     public void onNext(HomePage homePage) {
-                        homePageLiveData.setValue(homePage);
+                        if (homePageLiveData != null) {
+                            homePageLiveData.setValue(homePage);
+                        }
+                        if (listener != null) {
+                            listener.onSucceed(homePage);
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Tlog.printException("torahlog", e);
-                        HomePage value = new HomePage();
-                        homePageLiveData.setValue(value.setError(NetErrorType.NetError, "报错" + e.getMessage()));
+                        if (listener != null) {
+                            listener.onError(e, "加载列表数据失败");
+                        }
+                        if (homePageLiveData != null) {
+                            HomePage value = new HomePage();
+                            homePageLiveData.setValue(value.setError(NetErrorType.NetError, "报错" + e.getMessage()));
+                        }
                     }
 
                     @Override

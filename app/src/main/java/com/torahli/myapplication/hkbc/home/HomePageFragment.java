@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.ajguan.library.EasyRefreshLayout;
 import com.ajguan.library.LoadModel;
@@ -22,8 +23,13 @@ import com.torahli.myapplication.R;
 import com.torahli.myapplication.app.sharedpreferences.SharedPrefsKey;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
+import com.torahli.myapplication.framwork.bean.IResultListener;
 import com.torahli.myapplication.framwork.fragment.BaseFragment;
+import com.torahli.myapplication.hkbc.NavigationUtil;
+import com.torahli.myapplication.hkbc.databean.ILink;
+import com.torahli.myapplication.hkbc.home.auto.AutoLoadPresenter;
 import com.torahli.myapplication.hkbc.home.bean.HomePage;
+import com.torahli.myapplication.hkbc.login.LoginViewModel;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 import com.torahli.myapplication.hkbc.setting.sethost.SetUrlDialogHelper;
 
@@ -32,6 +38,9 @@ import javax.annotation.Nonnull;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DefaultObserver;
 
+/**
+ * 这个页面只做loading用
+ */
 public class HomePageFragment extends BaseFragment implements SetUrlDialogHelper.IView {
     @Nonnull
     protected RequestManager fragmentGlide;
@@ -40,6 +49,7 @@ public class HomePageFragment extends BaseFragment implements SetUrlDialogHelper
     private HomeAdapter homeAdapter;
     private EasyRefreshLayout refreshLayout;
     private RxSharedPreferences rxPreferences;
+    private ProgressBar loadingBar;
 
     public static HomePageFragment newInstance(BaseActivity activity) {
         HomePageFragment fragment = new HomePageFragment();
@@ -50,7 +60,7 @@ public class HomePageFragment extends BaseFragment implements SetUrlDialogHelper
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_hk_homepage_main, container, false);
+        return inflater.inflate(R.layout.fragment_hk_homepage_main2, container, false);
     }
 
     @Override
@@ -63,90 +73,49 @@ public class HomePageFragment extends BaseFragment implements SetUrlDialogHelper
     }
 
     private void initView(final View view) {
-        homeList = (RecyclerView) view.findViewById(R.id.hk_home_recyclerview);
-        homeAdapter = new HomeAdapter(fragmentGlide, this);
-        getLifecycle().addObserver(homeAdapter);
-        homeList.setLayoutManager(new LinearLayoutManager(this.getActivity()));
-        homeList.setAdapter(homeAdapter);
-        //下拉刷新
-        refreshLayout = (EasyRefreshLayout) view.findViewById(R.id.hk_home_easyrefresh);
-        refreshLayout.setLoadMoreModel(LoadModel.NONE);
-        refreshLayout.addEasyEvent(new EasyRefreshLayout.EasyEvent() {
-            @Override
-            public void onLoadMore() {
-            }
-
-            @Override
-            public void onRefreshing() {
-                homePageViewModel.initData();
-            }
-        });
-
-        homePageViewModel = ViewModelProviders.of(this).get(HomePageViewModel.class);
-        homePageViewModel.getHomePageData().observe(this, new android.arch.lifecycle.Observer<HomePage>() {
-            @Override
-            public void onChanged(@Nullable HomePage homePage) {
-                if (Tlog.isShowLogCat()) {
-                    Tlog.d(TAG, "首页更新 --- homePage:" + homePage);
-                }
-                refreshLayout.refreshComplete();
-                if (homePage == null || homePage.isError()) {
-                    String errorMsg = homePage == null ? "无数据" : homePage.getErrorMsg();
-                    Snackbar.make(view, errorMsg, Snackbar.LENGTH_LONG).show();
-                } else {
-                    homeAdapter.setNewData(homePage.getAllData());
-                    homeAdapter.notifyDataSetChanged();
-                }
-            }
-        });
+        loadingBar = (ProgressBar) view.findViewById(R.id.loadingProgressBar);
     }
 
     /**
-     * 读取域名
+     * 初始化数据
      */
     private void initData() {
-        onHostSetted();
-        //判断是否有域名缓存
-//        rxPreferences.getString(SharedPrefsKey.hostUrl).asObservable()
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new DefaultObserver<String>() {
-//                    @Override
-//                    public void onNext(String s) {
-//                        String url = SetUrlDialogHelper.checkHost(s);
-//                        showTips(url);
-//                        if (!TextUtils.isEmpty(url)) {
-//                            HKBCProtocolUtil.BASEURL = url;
-//                            onHostSetted();
-//                        } else {
-//                            showSetUrlDialog();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onComplete() {
-//
-//                    }
-//                });
+        AutoLoadPresenter autoLoadPresenter = new AutoLoadPresenter();
+        getLifecycle().addObserver(autoLoadPresenter);
+        autoLoadPresenter.start(new AutoLoadPresenter.IProgressListener() {
+            @Override
+            public void onProgress(int current, int total, boolean succeed, String msg) {
+                if (succeed) {
+                    loadingBar.setMax(total);
+                    loadingBar.setProgress(current);
+                    showTips(msg);
+                    if (current == total) {
+                        NavigationUtil.startPicContent(getActivity(), new ILink() {
+                            @Override
+                            public String getLink() {
+                                return "";
+                            }
+                        });
+                    }
+                } else {
+                    showErrorView();
+                }
+            }
+        });
     }
 
-    /**
-     * 需要用户设置域名
-     */
-    private void showSetUrlDialog() {
-        SetUrlDialogHelper.showSetUrlDialog(this);
+    private void showErrorView() {
+
     }
+
 
     /**
      * 设置完域名后回调此方法
      */
     @Override
+    @Deprecated
     public void onHostSetted() {
-        homePageViewModel.initData();
+//        homePageViewModel.initData();
     }
 
     @Override

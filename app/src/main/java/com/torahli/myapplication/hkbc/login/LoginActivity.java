@@ -183,7 +183,7 @@ public class LoginActivity extends BaseActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            loginViewModel.startLogin(email, password);
+            loginViewModel.startLogin(email, password,null);
         }
     }
 
