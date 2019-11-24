@@ -4,10 +4,18 @@ import android.arch.lifecycle.LifecycleObserver;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.torahli.myapplication.framwork.bean.IResultListener;
+import com.torahli.myapplication.hkbc.databean.Topic;
+import com.torahli.myapplication.hkbc.datamanager.PicDataManager;
 import com.torahli.myapplication.hkbc.home.HomePageViewModel;
+import com.torahli.myapplication.hkbc.home.ItemType;
+import com.torahli.myapplication.hkbc.home.bean.Banners;
 import com.torahli.myapplication.hkbc.home.bean.HomePage;
 import com.torahli.myapplication.hkbc.login.LoginViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 自动处理首次进入的一系列工作
@@ -62,6 +70,7 @@ public class AutoLoadPresenter implements LifecycleObserver {
             @Override
             public void onSucceed(HomePage homePage) {
                 listener.onProgress(2, TOTOL_STEP, false, "加载列表成功");
+                resolveHomePage(homePage, listener);
             }
 
             @Override
@@ -69,5 +78,29 @@ public class AutoLoadPresenter implements LifecycleObserver {
                 listener.onProgress(2, TOTOL_STEP, false, "加载列表失败");
             }
         });
+    }
+
+    private void resolveHomePage(HomePage homePage, final IProgressListener listener) {
+        List<MultiItemEntity> allData = homePage.getAllData();
+
+        List<Topic> topics = new ArrayList<>();
+        if (allData.size() > 0) {
+            for (MultiItemEntity datum : allData) {
+                if (datum.getItemType() == ItemType.Banners) {
+                    //banner里面的话题加入集合
+                    Banners banner = (Banners) datum;
+                    List<Topic> topicList = banner.getTopicList();
+                    if (topicList.size() > 0) {
+                        topics.addAll(topicList);
+                    }
+                } else {
+                    //todo
+                }
+            }
+            PicDataManager.getInstance().init(topics);
+            listener.onProgress(3, TOTOL_STEP, true, "列表初始化完成");
+        } else {
+            listener.onProgress(3, TOTOL_STEP, false, "无数据");
+        }
     }
 }
