@@ -41,7 +41,7 @@ public class HomePageFragment extends BaseFragment implements SetUrlDialogHelper
     private EasyRefreshLayout refreshLayout;
     private RxSharedPreferences rxPreferences;
 
-    public static HomePageFragment newInstance(BaseActivity activity){
+    public static HomePageFragment newInstance(BaseActivity activity) {
         HomePageFragment fragment = new HomePageFragment();
         fragment.setNoneNullActivity(activity);
         return fragment;
@@ -101,33 +101,37 @@ public class HomePageFragment extends BaseFragment implements SetUrlDialogHelper
         });
     }
 
+    /**
+     * 读取域名
+     */
     private void initData() {
+        onHostSetted();
         //判断是否有域名缓存
-        rxPreferences.getString(SharedPrefsKey.hostUrl).asObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultObserver<String>() {
-                    @Override
-                    public void onNext(String s) {
-                        String url = SetUrlDialogHelper.checkHost(s);
-                        showTips(url);
-                        if (!TextUtils.isEmpty(url)) {
-                            HKBCProtocolUtil.BASEURL = url;
-                            onHostSetted();
-                        } else {
-                            showSetUrlDialog();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+//        rxPreferences.getString(SharedPrefsKey.hostUrl).asObservable()
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new DefaultObserver<String>() {
+//                    @Override
+//                    public void onNext(String s) {
+//                        String url = SetUrlDialogHelper.checkHost(s);
+//                        showTips(url);
+//                        if (!TextUtils.isEmpty(url)) {
+//                            HKBCProtocolUtil.BASEURL = url;
+//                            onHostSetted();
+//                        } else {
+//                            showSetUrlDialog();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//
+//                    }
+//                });
     }
 
     /**
