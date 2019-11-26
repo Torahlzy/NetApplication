@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
@@ -19,6 +20,8 @@ import com.torahli.myapplication.R;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
 import com.torahli.myapplication.hkbc.NavigationUtil;
+import com.torahli.myapplication.hkbc.databean.Topic;
+import com.torahli.myapplication.hkbc.datamanager.PicDataManager;
 import com.torahli.myapplication.hkbc.topiccontent.TopicContentViewModel;
 import com.torahli.myapplication.hkbc.topiccontent.bean.TopicContent;
 
@@ -79,7 +82,7 @@ public class TopicContentPortraitActivity extends BaseActivity {
                 if (Tlog.isShowLogCat()) {
                     Tlog.d(TAG, "onChanged --- topicContent:" + topicContent);
                 }
-                mPageProgress.setVisibility(View.GONE);
+                showContent();
                 if (topicContent != null && !topicContent.isError()) {
                     pagerAdapter.setNewData(topicContent.getImgList());
 //                    pagerAdapter.notifyDataSetChanged();
@@ -107,10 +110,35 @@ public class TopicContentPortraitActivity extends BaseActivity {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
+        View foot = LayoutInflater.from(this).inflate(R.layout.item_root, mImgRecyclerView, false);
+        pagerAdapter.addFooterView(foot);
+        foot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Topic nextTopic = PicDataManager.getInstance().getNextTopic();
+                if (nextTopic != null) {
+                    mlink = nextTopic.getLink();
+                    initData();
+                } else {
+                    showTips("已经到最后一项");
+                }
+            }
+        });
     }
 
     private void initData() {
         topicContentViewModel.initData(mlink);
+        showLoading();
+    }
+
+    private void showLoading() {
+        mPageProgress.setVisibility(View.VISIBLE);
+        mImgRecyclerView.setVisibility(View.GONE);
+    }
+
+    private void showContent() {
+        mPageProgress.setVisibility(View.GONE);
+        mImgRecyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
