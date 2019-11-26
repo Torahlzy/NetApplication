@@ -76,6 +76,9 @@ public class HomePageFragment extends BaseFragment implements SetUrlDialogHelper
                                     return nextTopic.getLink();
                                 }
                             });
+                            if (getActivity() != null) {
+                                getActivity().finish();
+                            }
                         } else {
                             showTips("数据有误");
                         }

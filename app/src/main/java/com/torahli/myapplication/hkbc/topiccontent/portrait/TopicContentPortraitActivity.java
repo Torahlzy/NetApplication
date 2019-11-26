@@ -47,7 +47,7 @@ public class TopicContentPortraitActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_portrait_photolist);
         activityGlide = Glide.with(this);
 
@@ -85,6 +85,7 @@ public class TopicContentPortraitActivity extends BaseActivity {
                 showContent();
                 if (topicContent != null && !topicContent.isError()) {
                     pagerAdapter.setNewData(topicContent.getImgList());
+                    layoutManager.scrollToPosition(0);
 //                    pagerAdapter.notifyDataSetChanged();
                     maxSize = topicContent.getImgList().size();
                     mTvCurpage.setText("1/" + maxSize);
