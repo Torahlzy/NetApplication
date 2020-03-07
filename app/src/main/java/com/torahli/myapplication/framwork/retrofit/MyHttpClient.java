@@ -2,7 +2,6 @@ package com.torahli.myapplication.framwork.retrofit;
 
 import android.content.Context;
 
-import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.franmontiel.persistentcookiejar.ClearableCookieJar;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
@@ -34,7 +33,7 @@ public class MyHttpClient {
                 .addInterceptor(interceptor)
                 .cookieJar(cookieJar);
         if (BuildConfig.DEBUG) {
-            builder.addNetworkInterceptor(new StethoInterceptor());//todo 查看效果
+//            builder.addNetworkInterceptor(new StethoInterceptor());//todo 查看效果
 //            .addInterceptor(LoggerInterceptor("OK_HTTP"))
         }
         // https://github.com/JessYanCoding/ProgressManager/blob/master/README-zh.md 进度监听功能

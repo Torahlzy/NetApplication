@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.f2prateek.rx.preferences2.RxSharedPreferences;
-import com.facebook.stetho.Stetho;
 import com.torahli.myapplication.framwork.umeng.UmengApp;
 
 import org.jetbrains.annotations.NotNull;
@@ -21,8 +20,7 @@ public class MainApplication extends Application {
     public void onCreate() {
         super.onCreate();
         application = this;
-        //https://www.jianshu.com/p/6bc14895af96
-        Stetho.initializeWithDefaults(this);
+//        Stetho.initializeWithDefaults(this);
         //友盟
         UmengApp.init(this);
         fragmentationInit();
@@ -34,7 +32,7 @@ public class MainApplication extends Application {
      */
     private void fragmentationInit() {
         Fragmentation.builder()
-                .stackViewMode(AppConfig.debug ? Fragmentation.BUBBLE : Fragmentation.NONE)
+                .stackViewMode(AppConfig.debug ? Fragmentation.NONE : Fragmentation.NONE)
                 .debug(BuildConfig.DEBUG)
                 .install();
     }
