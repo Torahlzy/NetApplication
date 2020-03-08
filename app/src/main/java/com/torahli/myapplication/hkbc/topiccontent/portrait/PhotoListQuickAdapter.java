@@ -3,6 +3,8 @@ package com.torahli.myapplication.hkbc.topiccontent.portrait;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -18,6 +20,7 @@ import com.torahli.myapplication.R;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
 import com.torahli.myapplication.framwork.util.SystemUtil;
+import com.torahli.myapplication.hkbc.NavigationUtil;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 
 import java.util.List;
@@ -42,7 +45,7 @@ public class PhotoListQuickAdapter extends BaseQuickAdapter<String, BaseViewHold
     protected void convert(final BaseViewHolder helper, String item) {
         final PhotoView photoView = helper.getView(R.id.photoview_photo);
         final NumberProgressBar progressBar = helper.getView(R.id.pb_photo_load_progress);
-        String url = HKBCProtocolUtil.getWholeUrl(item);
+        final String url = HKBCProtocolUtil.getWholeUrl(item);
         progressBar.setVisibility(View.VISIBLE);
         // Glide 下载监听
         ProgressManager.getInstance().addResponseListener(url, new ProgressListener() {
@@ -61,7 +64,7 @@ public class PhotoListQuickAdapter extends BaseQuickAdapter<String, BaseViewHold
                 progressBar.setVisibility(View.GONE);
             }
         });
-        Tlog.d("torahlog", "PhotoListQuickAdapter.convert(..)--url:" + url);
+        Tlog.d("torahlog", "PhotoListQuickAdapter.convert(..)--加载的图片地址:" + url);
 
         //glide加载
         activityGlide.load(url).into(new DrawableImageViewTarget(photoView) {
@@ -91,5 +94,25 @@ public class PhotoListQuickAdapter extends BaseQuickAdapter<String, BaseViewHold
                 progressBar.setVisibility(View.GONE);
             }
         });
+        GestureDetector.OnDoubleTapListener onDoubleTapListener = new GestureDetector.OnDoubleTapListener() {
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                return false;
+            }
+
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                NavigationUtil.startPicDetialsPage(mContext, url);
+                return true;
+            }
+
+            @Override
+            public boolean onDoubleTapEvent(MotionEvent e) {
+                return false;
+            }
+        };
+        photoView.setOnDoubleTapListener(onDoubleTapListener);
     }
+
+
 }

@@ -63,6 +63,9 @@
         <activity
             android:name=".hkbc.setting.SettingsActivity"
             android:label="@string/title_activity_settings"></activity>
+        <activity
+            android:name=".hkbc.topiccontent.picdetails.PicDetailActivity"
+            android:label="@string/title_activity_pic_details"/>
     </application>
 
 </manifest>
