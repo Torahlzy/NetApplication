@@ -2,23 +2,25 @@ package com.torahli.myapplication.hkbc;
 
 import android.Manifest;
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Observer;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.DrawerLayout.DrawerListener;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringDef;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.drawerlayout.widget.DrawerLayout.DrawerListener;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStore;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -121,7 +123,7 @@ public class MainActivity extends BaseActivity
     }
 
     private void checkUpdate() {
-        checkUpdateViewModel = ViewModelProviders.of(this).get(CheckUpdateViewModel.class);
+        checkUpdateViewModel = new ViewModelProvider(this).get(CheckUpdateViewModel.class);
         checkUpdateViewModel.getContentLiveData().observe(this, new Observer<UpdateInfo>() {
             @Override
             public void onChanged(@Nullable UpdateInfo updateInfo) {

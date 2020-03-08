@@ -1,6 +1,6 @@
 package com.torahli.myapplication.framwork.fragment;
 
-import android.support.v7.app.ActionBar;
+import androidx.appcompat.app.ActionBar;
 import android.text.TextUtils;
 
 import com.torahli.myapplication.framwork.activity.BaseActivity;

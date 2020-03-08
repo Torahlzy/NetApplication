@@ -1,6 +1,6 @@
 package com.torahli.myapplication.hkbc.topiccontent;
 
-import android.arch.lifecycle.MutableLiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.bean.NetErrorType;

@@ -6,7 +6,7 @@
     android:background="@color/light_bg"
     tools:context=".hkbc.topiccontent.TopicContentActivity">
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/photo_recyclerView_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

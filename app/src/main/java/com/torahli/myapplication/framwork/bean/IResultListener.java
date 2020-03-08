@@ -1,6 +1,6 @@
 package com.torahli.myapplication.framwork.bean;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public interface IResultListener<T> {
     void onSucceed(T t);

@@ -1,16 +1,14 @@
 package com.torahli.myapplication.hkbc.topiccontent.picdetails;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Observer;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
@@ -19,8 +17,6 @@ import com.torahli.myapplication.R;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
 import com.torahli.myapplication.hkbc.NavigationUtil;
-import com.torahli.myapplication.hkbc.topiccontent.PhotoViewPagerAdapter;
-import com.torahli.myapplication.hkbc.topiccontent.TopicContentActivity;
 import com.torahli.myapplication.hkbc.topiccontent.TopicContentViewModel;
 import com.torahli.myapplication.hkbc.topiccontent.bean.TopicContent;
 
@@ -64,7 +60,7 @@ public class PicDetailActivity extends BaseActivity {
         mPageProgress = findViewById(R.id.topic_details_page_progress);
         mPageProgress = findViewById(R.id.topic_details_photoview_photo);
 
-        topicContentViewModel = ViewModelProviders.of(this).get(TopicContentViewModel.class);
+        topicContentViewModel = new ViewModelProvider(this).get(TopicContentViewModel.class);
         topicContentViewModel.getContentLiveData().observe(this, new Observer<TopicContent>() {
             @Override
             public void onChanged(@Nullable TopicContent topicContent) {

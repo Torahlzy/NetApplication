@@ -1,12 +1,12 @@
 package com.torahli.myapplication.hkbc.topiclist;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Observer;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,7 +80,7 @@ public class TopicListFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(new GridLayoutManager(this.getActivity(), 2));
         mRecyclerView.setAdapter(adapter);
 
-        topicListViewModel = ViewModelProviders.of(this).get(TopicListViewModel.class);
+        topicListViewModel = new ViewModelProvider(this).get(TopicListViewModel.class);
         topicListViewModel.getTopicListLiveData().observe(this, new Observer<TopicList>() {
             @Override
             public void onChanged(@Nullable TopicList topicList) {

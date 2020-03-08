@@ -1,13 +1,7 @@
 package com.torahli.myapplication.hkbc.login;
 
-import android.arch.lifecycle.MutableLiveData;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.widget.Toast;
+import androidx.lifecycle.MutableLiveData;
 
-import com.f2prateek.rx.preferences2.RxSharedPreferences;
-import com.torahli.myapplication.MainApplication;
-import com.torahli.myapplication.app.sharedpreferences.SharedPrefsKey;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.bean.IResultListener;
 import com.torahli.myapplication.framwork.bean.NetErrorType;
@@ -20,7 +14,6 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;

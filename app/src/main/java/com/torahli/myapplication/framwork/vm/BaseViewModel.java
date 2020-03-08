@@ -1,6 +1,6 @@
 package com.torahli.myapplication.framwork.vm;
 
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModel;
 
 import javax.annotation.Nonnull;
 

@@ -1,6 +1,6 @@
 package com.torahli.myapplication.app.update;
 
-import android.arch.lifecycle.MutableLiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.torahli.myapplication.app.net.APPProtocolUtil;
 import com.torahli.myapplication.app.update.bean.UpdateInfo;

@@ -1,15 +1,14 @@
 package com.torahli.myapplication.hkbc.topiccontent.portrait;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Observer;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -77,7 +76,7 @@ public class TopicContentPortraitActivity extends BaseActivity {
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mImgRecyclerView.setLayoutManager(layoutManager);
         mImgRecyclerView.setAdapter(pagerAdapter);
-        topicContentViewModel = ViewModelProviders.of(this).get(TopicContentViewModel.class);
+        topicContentViewModel = new ViewModelProvider(this).get(TopicContentViewModel.class);
         topicContentViewModel.getContentLiveData().observe(this, new Observer<TopicContent>() {
             @Override
             public void onChanged(@Nullable TopicContent topicContent) {

@@ -3,7 +3,7 @@ package com.torahli.myapplication.framwork.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 
 import com.torahli.myapplication.R;
@@ -13,7 +13,7 @@ import com.torahli.myapplication.R;
  * 需求1：一边固定，另一边按照图片的尺寸来设置长度。显示方式是centerCrop
  * 需求2：控件的高宽比固定
  */
-public class SquareImagView extends android.support.v7.widget.AppCompatImageView {
+public class SquareImagView extends androidx.appcompat.widget.AppCompatImageView {
     /**
      * 高度除以宽度
      */

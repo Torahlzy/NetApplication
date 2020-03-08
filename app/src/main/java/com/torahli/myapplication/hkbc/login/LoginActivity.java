@@ -2,14 +2,15 @@ package com.torahli.myapplication.hkbc.login;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -122,7 +123,7 @@ public class LoginActivity extends BaseActivity {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
+        loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         loginViewModel.getLoginResultLiveData().observe(this, new Observer<LoginResult>() {
             @Override
             public void onChanged(@Nullable LoginResult result) {

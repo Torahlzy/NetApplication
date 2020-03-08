@@ -1,13 +1,12 @@
 package com.torahli.myapplication.hkbc.topiccontent;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
-import android.content.Intent;
+import androidx.lifecycle.Observer;
+
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.ActionBar;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
@@ -20,7 +19,6 @@ import com.torahli.myapplication.R;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
 import com.torahli.myapplication.hkbc.NavigationUtil;
-import com.torahli.myapplication.hkbc.databean.ILink;
 import com.torahli.myapplication.hkbc.topiccontent.bean.TopicContent;
 
 import javax.annotation.Nonnull;
@@ -70,7 +68,7 @@ public class TopicContentActivity extends BaseActivity {
 
         pagerAdapter = new PhotoViewPagerAdapter(null, activityGlide, getLayoutInflater());
         mViewPager.setAdapter(pagerAdapter);
-        topicContentViewModel = ViewModelProviders.of(this).get(TopicContentViewModel.class);
+        topicContentViewModel = new ViewModelProvider(this).get(TopicContentViewModel.class);
         topicContentViewModel.getContentLiveData().observe(this, new Observer<TopicContent>() {
             @Override
             public void onChanged(@Nullable TopicContent topicContent) {
