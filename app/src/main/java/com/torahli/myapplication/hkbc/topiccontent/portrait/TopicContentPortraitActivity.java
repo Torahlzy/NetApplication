@@ -65,12 +65,14 @@ public class TopicContentPortraitActivity extends BaseActivity {
         if (actionBar != null) {
             actionBar.hide();
         }
+        long last = System.nanoTime();
 
         mImgRecyclerView = findViewById(R.id.photo_recyclerView_list);
         mTvCurpage = findViewById(R.id.tv_curpage);
 
         mPageProgress = findViewById(R.id.topic_content_page_progress);
 
+        Tlog.d("torahlog", "HomePageFragment.initData(..)--花费时间3find:" + (System.nanoTime() - last));
         pagerAdapter = new PhotoListQuickAdapter(null, activityGlide);
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mImgRecyclerView.setLayoutManager(layoutManager);

@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.torahli.myapplication.R;
+import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
 import com.torahli.myapplication.framwork.fragment.BaseFragment;
 import com.torahli.myapplication.hkbc.NavigationUtil;
@@ -52,7 +53,9 @@ public class HomePageFragment extends BaseFragment implements SetUrlDialogHelper
     }
 
     private void initView(final View view) {
+        long last = System.nanoTime();
         loadingBar = (NumberProgressBar) view.findViewById(R.id.loadingProgressBar);
+        Tlog.d("torahlog", "HomePageFragment.initData(..)--花费时间find:" + (System.nanoTime() - last));
     }
 
     /**
@@ -60,7 +63,9 @@ public class HomePageFragment extends BaseFragment implements SetUrlDialogHelper
      */
     private void initData() {
         AutoLoadPresenter autoLoadPresenter = new AutoLoadPresenter();
+        long last = System.nanoTime();
         getLifecycle().addObserver(autoLoadPresenter);
+        Tlog.d("torahlog", "HomePageFragment.initData(..)--花费时间add:" + (System.nanoTime() - last));
         autoLoadPresenter.start(new AutoLoadPresenter.IProgressListener() {
             @Override
             public void onProgress(int current, int total, boolean succeed, String msg) {
@@ -88,6 +93,8 @@ public class HomePageFragment extends BaseFragment implements SetUrlDialogHelper
                 }
             }
         });
+        Tlog.d("torahlog", "HomePageFragment.initData(..)--花费时间rx:" + (System.nanoTime() - last));
+
     }
 
     private void showErrorView() {

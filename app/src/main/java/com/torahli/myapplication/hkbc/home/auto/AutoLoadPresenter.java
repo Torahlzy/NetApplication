@@ -1,10 +1,13 @@
 package com.torahli.myapplication.hkbc.home.auto;
 
+import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
+import android.arch.lifecycle.OnLifecycleEvent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.bean.IResultListener;
 import com.torahli.myapplication.hkbc.databean.Topic;
 import com.torahli.myapplication.hkbc.datamanager.PicDataManager;
@@ -39,6 +42,11 @@ public class AutoLoadPresenter implements LifecycleObserver {
     }
 
     private static final int TOTOL_STEP = 3;
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    public void release() {
+        Tlog.d("torahlog", "AutoLoadPresenter.release(..)--1:" + 1);
+    }
 
     /**
      * 开始
