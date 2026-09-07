@@ -8,11 +8,11 @@ import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.torahli.myapplication.BuildConfig;
-import com.torahli.myapplication.framwork.Tlog;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Dispatcher;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -75,12 +75,22 @@ public class MyHttpClient {
      * 缺少 Referer 或 UA 不像浏览器时，站点会返回 404/403 防盗链页面导致加载失败。
      */
     public static OkHttpClient getGlideUsedClient(Context context) {
+        // 图片请求并发控制：该站对大量并发图片请求不友好（曾出现一次发起 20+ 请求全部卡住）。
+        // 限制“同时最多 3 个请求在途”，OkHttp 会排队等待——某个请求成功或失败后，
+        // 自动从队列里调度下一个，避免一次性打太多。
+        Dispatcher dispatcher = new Dispatcher();
+        dispatcher.setMaxRequests(3);
+        dispatcher.setMaxRequestsPerHost(3);
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .dispatcher(dispatcher)
+                //该站图片响应本身偏慢（单张约 1~3s，移动网络可能更久），
+                //超时放宽到与页面请求相当，避免慢请求被默认 10s 读超时掐断
+                .writeTimeout((30 * 1000), TimeUnit.MILLISECONDS)
+                .readTimeout((30 * 1000), TimeUnit.MILLISECONDS)
+                .connectTimeout((15 * 1000), TimeUnit.MILLISECONDS)
                 .addInterceptor(new BrowserImageInterceptor())
                 .cookieJar(getCookieJar(context));
         if (BuildConfig.DEBUG) {
-            // 调试：把图片请求结果打到 logcat，可用 adb logcat | grep "图片加载" 过滤
-            builder.addInterceptor(new ImageResultLogInterceptor());
             // 调试：在 Stetho 里可以直接看到图片请求的完整请求/响应头
             builder.addNetworkInterceptor(new StethoInterceptor());
         }
@@ -105,19 +115,6 @@ public class MyHttpClient {
                     .header("Connection", "keep-alive")
                     .build();
             return chain.proceed(request);
-        }
-    }
-
-    /**
-     * 调试用：打印图片请求的响应码（成功 2xx；若被防盗链拒绝会是 403/404）。
-     */
-    private static class ImageResultLogInterceptor implements Interceptor {
-        @Override
-        public Response intercept(Chain chain) throws IOException {
-            Request request = chain.request();
-            Response response = chain.proceed(request);
-            Tlog.d("图片加载", request.method() + " " + request.url() + " => HTTP " + response.code());
-            return response;
         }
     }
 }

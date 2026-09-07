@@ -32,7 +32,8 @@ import com.torahli.myapplication.R;
 import com.torahli.myapplication.app.update.CheckUpdateViewModel;
 import com.torahli.myapplication.app.update.bean.UpdateInfo;
 import com.torahli.myapplication.app.update.download.DownLoadAPKUtil;
-import com.torahli.myapplication.framwork.GlideApp;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
 import com.torahli.myapplication.framwork.util.SystemUtil;
@@ -221,11 +222,12 @@ public class MainActivity extends BaseActivity
                         if (userinfo != null && userinfo.isLogin()) {
                             hasLogin = true;
                             userName.setText(userinfo.getUserName());
-                            GlideApp.with(MainActivity.this)
+                            Glide.with(MainActivity.this)
                                     .load(HKBCProtocolUtil.getWholeUrl(userinfo.getUserHeadUrl()))
-                                    .placeholder(R.drawable.ic_default_user)
-                                    .error(R.drawable.ic_default_user)
-                                    .circleCrop()
+                                    //Glide 5：placeholder/error/circleCrop 移到 RequestOptions
+                                    .apply(RequestOptions.placeholderOf(R.drawable.ic_default_user)
+                                            .error(R.drawable.ic_default_user)
+                                            .circleCrop())
                                     .into(headImage);
                             userContent.setText(userinfo.getUserDetails());
                             showTips("欢迎回来，" + userinfo.getUserName());

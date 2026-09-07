@@ -13,8 +13,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
 import com.torahli.myapplication.R;
 import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
@@ -33,8 +31,6 @@ public class TopicContentPortraitActivity extends BaseActivity {
     @Nonnull
     private TopicContentViewModel topicContentViewModel;
     private RecyclerView mImgRecyclerView;
-    @Nonnull
-    protected RequestManager activityGlide;
     private PhotoListQuickAdapter pagerAdapter;
     private ProgressBar mPageProgress;
     private TextView mTvCurpage;
@@ -46,7 +42,6 @@ public class TopicContentPortraitActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_portrait_photolist);
-        activityGlide = Glide.with(this);
 
         initArgs();
         initViews();
@@ -68,7 +63,7 @@ public class TopicContentPortraitActivity extends BaseActivity {
 
         mPageProgress = findViewById(R.id.topic_content_page_progress);
 
-        pagerAdapter = new PhotoListQuickAdapter(null, activityGlide);
+        pagerAdapter = new PhotoListQuickAdapter(null);
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mImgRecyclerView.setLayoutManager(layoutManager);
         mImgRecyclerView.setAdapter(pagerAdapter);

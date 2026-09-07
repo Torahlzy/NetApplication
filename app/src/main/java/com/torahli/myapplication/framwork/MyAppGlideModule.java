@@ -24,7 +24,8 @@ public class MyAppGlideModule extends AppGlideModule {
         if (glideUsedClient == null) {
             glideUsedClient = MyHttpClient.getGlideUsedClient(context);
         }
-        //Glide 底层默认使用 HttpConnection ，这里替换为自定义 Okhttp 后才能使用 Glide 的加载进度监听
+        //Glide 底层默认使用 HttpURLConnection，这里替换为自定义 OkHttp，才能
+        //统一带上浏览器 UA / Cookie / Referer，并做并发限制与超时配置
         registry.replace(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(glideUsedClient));
     }
 
