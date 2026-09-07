@@ -1,5 +1,6 @@
 package com.torahli.myapplication.hkbc.net;
 
+import com.torahli.myapplication.AppConfig;
 import com.torahli.myapplication.framwork.retrofit.MyRetrofit;
 import com.torahli.myapplication.framwork.util.ProtocolUtil;
 
@@ -12,7 +13,10 @@ import retrofit2.http.FieldMap;
  * 网络协议
  */
 public class HKBCProtocolUtil extends ProtocolUtil {
-    public static String BASEURL = "";
+    /**
+     * 站点域名，默认使用 AppConfig.DEFAULT_HOST_URL，用户可在设置里重新配置
+     */
+    public static String BASEURL = AppConfig.DEFAULT_HOST_URL;
 
     /**
      * 主页

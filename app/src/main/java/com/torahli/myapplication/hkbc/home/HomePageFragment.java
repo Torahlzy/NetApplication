@@ -18,6 +18,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.google.android.material.snackbar.Snackbar;
+import com.torahli.myapplication.AppConfig;
 import com.torahli.myapplication.MainApplication;
 import com.torahli.myapplication.R;
 import com.torahli.myapplication.app.sharedpreferences.SharedPrefsKey;
@@ -109,13 +110,14 @@ public class HomePageFragment extends BaseFragment implements SetUrlDialogHelper
     }
 
     private void initData() {
-        //判断是否有域名缓存
+        //判断是否有域名缓存，没有则使用默认域名 AppConfig.DEFAULT_HOST_URL
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainApplication.getApplication());
-        String url = SetUrlDialogHelper.checkHost(preferences.getString(SharedPrefsKey.hostUrl, ""));
+        String url = SetUrlDialogHelper.checkHost(preferences.getString(SharedPrefsKey.hostUrl, AppConfig.DEFAULT_HOST_URL));
         if (!TextUtils.isEmpty(url)) {
             HKBCProtocolUtil.BASEURL = url;
             onHostSetted();
         } else {
+            //默认域名非法时，才需要用户手动设置
             showSetUrlDialog();
         }
     }

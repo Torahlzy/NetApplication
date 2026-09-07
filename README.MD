@@ -8,7 +8,7 @@
     - dataBean的hashCode和equals方法要能够把相同数据源的2个对象判断为相等
 
 # 构建环境（2026 现代化）
-- Gradle 9.6.0（wrapper 走腾讯镜像 https://mirrors.cloud.tencent.com/gradle/）+ AGP 9.3.2 + JDK 17
+- Gradle 9.6.0（wrapper 走腾讯镜像 https://mirrors.cloud.tencent.com/gradle/）+ AGP 9.3.2 + JDK ≥ 17（Gradle daemon 固定运行于 JDK 21，见 AGENTS.MD）
 - Kotlin 由 AGP 9 内置编译（勿显式锁 kotlin-stdlib 版本）
 - compileSdk 37 / minSdk 23 / targetSdk 37，全 AndroidX
 - 本地构建：`./gradlew :app:assembleDebug`（详见 AGENTS.MD）

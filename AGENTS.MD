@@ -16,7 +16,8 @@
 
 - 平台：Android（`compileSdk 37` / `minSdk 23` / `targetSdk 37`，**全 AndroidX**）
 - 构建：Gradle **9.6.0**（wrapper 走**腾讯镜像** `mirrors.cloud.tencent.com/gradle`）+
-  AGP **9.3.2**（9.3.x 是本机 Android Studio 支持的最高版本，勿升 9.4+），运行于 JDK 17。
+  AGP **9.3.2**（9.3.x 是本机 Android Studio 支持的最高版本，勿升 9.4+），
+  Gradle daemon 固定运行于 JDK 21（见"环境与构建"）。
   **Kotlin 由 AGP 9 内置编译**，会自动带上匹配的 `kotlin-stdlib` —— 不要显式锁 stdlib
   版本（锁比内置编译器更新的版本会报元数据不兼容）。
 - 架构：MVVM —— `androidx.lifecycle`（`lifecycle-viewmodel/livedata:2.11`）
@@ -34,7 +35,14 @@
 
 ## 环境与构建
 
-- 需要 **JDK 17**、Android SDK（含 platform android-37、build-tools ≥36）。
+- 需要 **JDK ≥ 17**、Android SDK（含 platform android-37、build-tools ≥36）。
+- Gradle daemon 的 JVM 由项目内 `gradle/gradle-daemon-jvm.properties` 固定为 **JDK 21**
+  （`toolchainVersion=21`）：本机已装 JDK 21 即可离线构建；若未安装，
+  `settings.gradle` 里的 foojay-resolver-convention 插件会尝试自动下载
+  （需能访问 `api.foojay.io`，国内网络不畅时请先装好本地 JDK 21）。
+  这两个文件是 Android Studio 迁移生成的，与 JDK 17 不冲突：**保留并提交，勿删**。
+  另外 `gradle.properties` 中的 `org.gradle.tooling.parallel=true` 为 Gradle 9.4+
+  并行 sync 开关，AS 自动加的，无害。
 - `local.properties` 指向本机 SDK，已被 `.gitignore` 忽略，不要提交。
 - 构建命令：
   - `./gradlew :app:assembleDebug` — debug 包

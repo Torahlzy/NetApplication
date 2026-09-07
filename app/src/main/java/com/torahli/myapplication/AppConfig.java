@@ -13,6 +13,11 @@ public class AppConfig {
 
     public static final String CHECK_PDATE_JSON_URL = "https://github.com/Torahlzy/NetApplication/raw/master/raw/notice.json";
     /**
+     * 站点默认域名
+     * 用户未在设置里手动配置域名时，使用此默认地址（末尾带 /）
+     */
+    public static final String DEFAULT_HOST_URL = "http://hkcdn4.space/";
+    /**
      * sd卡的文件夹路径
      * xml\file_paths.xml
      */
