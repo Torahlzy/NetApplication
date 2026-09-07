@@ -3,6 +3,7 @@ package com.torahli.myapplication.framwork.fragment;
 import androidx.appcompat.app.ActionBar;
 import android.text.TextUtils;
 
+import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
 
 import javax.annotation.Nonnull;
@@ -23,6 +24,8 @@ public abstract class BaseFragment extends BaseNavFragment {
     @Override
     public void onSupportVisible() {
         super.onSupportVisible();
+        //保留：便于排查时确认“当前在哪个Fragment页面”
+        Tlog.i("页面跳转", "【当前页面(Fragment)】" + getClass().getSimpleName() + "，标题=" + getTitle());
         if (!TextUtils.isEmpty(getTitle())) {
             setTitle(getTitle());
         }
