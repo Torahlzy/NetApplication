@@ -1,5 +1,19 @@
 apply plugin: 'com.android.application'
 
+// ===== 本地私有配置（不提交 git）=====
+// 站点默认域名等敏感/本机相关配置，放在仓库根目录的 local-app.properties
+// （已被 .gitignore 忽略，不会提交）。若文件缺失则用空字符串兜底，
+// 保证克隆/CI 环境也能正常编译；真实域名请参照 local-app.properties.example 填写。
+def localAppProps = new Properties()
+def localAppPropsFile = rootProject.file('local-app.properties')
+if (localAppPropsFile.exists()) {
+    localAppPropsFile.withInputStream { localAppProps.load(it) }
+} else {
+    println "提示：未找到本地配置文件 ${localAppPropsFile}，" +
+            "DEFAULT_HOST_URL 将使用空默认值（可复制 local-app.properties.example 创建）"
+}
+def localDefaultHostUrl = localAppProps.getProperty('DEFAULT_HOST_URL', '')
+
 android {
     namespace 'com.torahli.myapplication'
     compileSdk 37
@@ -11,6 +25,9 @@ android {
         versionCode 1002
         versionName "2.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        // 站点默认域名：来自本地配置文件 local-app.properties（不提交 git），
+        // AppConfig.DEFAULT_HOST_URL 改为引用该字段，仓库内不再硬编码真实域名
+        buildConfigField "String", "DEFAULT_HOST_URL", '"' + localDefaultHostUrl + '"'
     }
     buildTypes {
         debug {

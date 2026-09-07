@@ -73,9 +73,8 @@ public class TextListAdapter extends RecyclerView.Adapter<TextListAdapter.Holder
     }
 
     private void jumpToTopicContent(Topic topic) {
-        if (Tlog.isShowLogCat()) {
-            Tlog.i("TextListAdapter", "准备打开主题--- topic:" + topic);
-        }
+        Tlog.i("页面跳转", "【点击】文字列表页 TextTitleListFragment 的条目 → 打开图片内容页，title="
+                + topic.getTitle() + "，link=" + topic.getLink());
         NavigationUtil.startPicContent(fragment.getActivity(), topic);
     }
 

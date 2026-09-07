@@ -1,0 +1,7 @@
+# ============ 本地私有配置示例（本文件可提交 git）============
+# 使用方法：复制本文件为 local-app.properties，填入真实配置后即可。
+# local-app.properties 已被 .gitignore 忽略，不会提交到 git；
+# 缺失该文件时构建仍可通过（DEFAULT_HOST_URL 兜底为空字符串）。
+#
+# 站点默认域名：用户未在设置里手动配置域名时使用（末尾带 /）
+DEFAULT_HOST_URL=https://example.com/

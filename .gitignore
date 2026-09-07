@@ -1,6 +1,8 @@
 *.iml
 .gradle
 /local.properties
+# 本地私有配置（站点默认域名等），勿提交到 git
+/local-app.properties
 /.idea/libraries
 /.idea/modules.xml
 /.idea/workspace.xml

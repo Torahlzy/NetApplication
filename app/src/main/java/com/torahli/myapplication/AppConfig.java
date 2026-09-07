@@ -15,8 +15,10 @@ public class AppConfig {
     /**
      * 站点默认域名
      * 用户未在设置里手动配置域名时，使用此默认地址（末尾带 /）
+     * 真实域名放在本地配置文件 local-app.properties（已被 .gitignore 忽略、不提交 git），
+     * 由 app/build.gradle 读取并注入 BuildConfig.DEFAULT_HOST_URL，避免仓库内硬编码。
      */
-    public static final String DEFAULT_HOST_URL = "http://hkcdn4.space/";
+    public static final String DEFAULT_HOST_URL = BuildConfig.DEFAULT_HOST_URL;
     /**
      * sd卡的文件夹路径
      * xml\file_paths.xml
