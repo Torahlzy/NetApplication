@@ -1,13 +1,20 @@
 package com.torahli.myapplication.hkbc.topiclist;
 
+import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.torahli.myapplication.R;
 import com.torahli.myapplication.framwork.GlideApp;
 import com.torahli.myapplication.framwork.Tlog;
@@ -61,10 +68,39 @@ public class TopicListAdapter extends RecyclerView.Adapter<TopicListAdapter.Hold
         layoutParams.width = SystemUtil.getScreenWidth(fragment.getActivity()) / 2
                 - SystemUtil.dp2px(8);
         holder.img.setLayoutParams(layoutParams);
-        GlideApp.with(fragment)
-                .load(HKBCProtocolUtil.getWholeUrl(item.getPicUrl()))
-                .error(R.drawable.ic_common_fail_svg)
-                .into(holder.img);
+
+        String wholeUrl = HKBCProtocolUtil.getWholeUrl(item.getPicUrl());
+        if (position == 0) {
+            //调试：确认列表条目里取到的完整图片地址（tag 为 "图片加载 torahlog"）
+            Tlog.i("图片加载", "TopicListAdapter 第1条图片 url=" + wholeUrl);
+        }
+        if (TextUtils.isEmpty(wholeUrl)) {
+            //解析不到图时直接显示失败占位图，避免用空地址去请求
+            holder.img.setImageResource(R.drawable.ic_common_fail_svg);
+        } else {
+            GlideApp.with(fragment)
+                    .load(wholeUrl)
+                    .error(R.drawable.ic_common_fail_svg)
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                    Target<Drawable> target, boolean isFirstResource) {
+                            //调试：图片加载失败的具体地址与原因（HTTP 状态可在 MyHttpClient 的
+                            //“图片加载”日志里看，这里是解码层的异常）
+                            Tlog.w("图片加载", "列表图片加载失败 url=" + model
+                                    + "\n原因=" + (e == null ? "unknown" : e.getMessage()));
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model,
+                                                       Target<Drawable> target, DataSource dataSource,
+                                                       boolean isFirstResource) {
+                            return false;
+                        }
+                    })
+                    .into(holder.img);
+        }
         holder.tv.setText(item.getTitle());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

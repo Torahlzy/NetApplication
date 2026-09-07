@@ -10,11 +10,18 @@ import okhttp3.Response;
  * 模拟手机端
  */
 class MobileWebKitInterceptor implements Interceptor {
+    /**
+     * 移动端浏览器 UA。页面请求与图片请求共用同一 UA，模拟同一个浏览器
+     * （MyHttpClient.BrowserImageInterceptor 也会用它，勿随意改动）
+     */
+    static final String USER_AGENT =
+            "Mozilla/5.0 (Linux; U; Android 8.1.0; zh-cn; SKR-A0 Build/G66X1808091CN00MPX) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/53.0.2785.146 Mobile Safari/537.36 XiaoMi/MiuiBrowser/9.4.12";
+
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request()
                 .newBuilder()
-                .addHeader("User-Agent", "Mozilla/5.0 (Linux; U; Android 8.1.0; zh-cn; SKR-A0 Build/G66X1808091CN00MPX) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/53.0.2785.146 Mobile Safari/537.36 XiaoMi/MiuiBrowser/9.4.12")
+                .addHeader("User-Agent", USER_AGENT)
                 .addHeader("Connection", "keep-alive")
                 .addHeader("Accept-Encoding", "deflate")
                 .addHeader("Accept-Language", "zh-CN,en-US;q=0.8")
