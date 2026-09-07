@@ -3,8 +3,6 @@ package com.torahli.myapplication.framwork.activity;
 import androidx.appcompat.app.ActionBar;
 import android.widget.Toast;
 
-import com.torahli.myapplication.framwork.Tlog;
-
 /**
  * 所有常规activity都应该继承此类
  */
@@ -20,13 +18,6 @@ public abstract class BaseActivity extends BaseNavActivity {
 
     public void showToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //调试用：每次Activity页面显示(含跳转/返回/启动)时打印当前是哪个页面
-        Tlog.i("页面跳转", "【当前页面(Activity)】" + getClass().getSimpleName());
     }
 
     /**

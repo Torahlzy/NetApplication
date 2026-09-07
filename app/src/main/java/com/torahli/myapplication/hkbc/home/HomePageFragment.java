@@ -22,7 +22,6 @@ import com.torahli.myapplication.AppConfig;
 import com.torahli.myapplication.MainApplication;
 import com.torahli.myapplication.R;
 import com.torahli.myapplication.app.sharedpreferences.SharedPrefsKey;
-import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
 import com.torahli.myapplication.framwork.fragment.BaseFragment;
 import com.torahli.myapplication.hkbc.home.bean.HomePage;
@@ -95,9 +94,6 @@ public class HomePageFragment extends BaseFragment implements SetUrlDialogHelper
         homePageViewModel.getHomePageData().observe(this, new Observer<HomePage>() {
             @Override
             public void onChanged(@Nullable HomePage homePage) {
-                if (Tlog.isShowLogCat()) {
-                    Tlog.d(TAG, "首页更新 --- homePage:" + homePage);
-                }
                 refreshLayout.setRefreshing(false);
                 if (homePage == null || homePage.isError()) {
                     String errorMsg = homePage == null ? "无数据" : homePage.getErrorMsg();

@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.torahli.myapplication.R;
-import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
 import com.torahli.myapplication.hkbc.NavigationUtil;
 import com.torahli.myapplication.hkbc.topiccontent.TopicContentViewModel;
@@ -71,9 +70,6 @@ public class TopicContentPortraitActivity extends BaseActivity {
         topicContentViewModel.getContentLiveData().observe(this, new Observer<TopicContent>() {
             @Override
             public void onChanged(@Nullable TopicContent topicContent) {
-                if (Tlog.isShowLogCat()) {
-                    Tlog.d(TAG, "onChanged --- topicContent:" + topicContent);
-                }
                 mPageProgress.setVisibility(View.GONE);
                 if (topicContent != null && !topicContent.isError()) {
                     pagerAdapter.setNewData(topicContent.getImgList());

@@ -33,9 +33,6 @@ public class HomePageViewModel extends BaseViewModel {
                     @Override
                     public HomePage apply(String s) throws Exception {
                         Document doc = Jsoup.parse(s);
-                        if (Tlog.isShowLogCat()) {
-                            Tlog.d(TAG, "apply --- 首页数据长度:" + s.length());
-                        }
                         HomePage homePage = HomePageParser.INSTANCE.parseTopics(doc);
                         //添加一个自定义的连接
                         homePage.addCustomEntity(TextTopic.newInnerComicGuideLink());

@@ -34,7 +34,6 @@ import com.torahli.myapplication.app.update.bean.UpdateInfo;
 import com.torahli.myapplication.app.update.download.DownLoadAPKUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
 import com.torahli.myapplication.framwork.util.SystemUtil;
 import com.torahli.myapplication.hkbc.home.HomePageFragment;
@@ -110,9 +109,6 @@ public class MainActivity extends BaseActivity
         checkUpdateViewModel.getContentLiveData().observe(this, new Observer<UpdateInfo>() {
             @Override
             public void onChanged(@Nullable UpdateInfo updateInfo) {
-                if (Tlog.isShowLogCat()) {
-                    Tlog.d(TAG, "onChanged --- updateInfo:" + updateInfo);
-                }
 
                 if (updateInfo != null && updateInfo.isAvailable()) {
                     UpdateInfo.Update update = updateInfo.getUpdate();

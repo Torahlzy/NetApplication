@@ -1,6 +1,5 @@
 package com.torahli.myapplication.hkbc.home
 
-import com.torahli.myapplication.framwork.Tlog
 import com.torahli.myapplication.hkbc.databean.Topic
 import com.torahli.myapplication.hkbc.home.bean.Banners
 import com.torahli.myapplication.hkbc.home.bean.HomePage
@@ -70,7 +69,7 @@ object HomePageParser {
                         needLogin.isNotEmpty() -> UserInfoManager.getInstance()
                                 .setUserinfo(null, null)
                                 .notifyUserInfoChanged()
-                        else -> Tlog.w("torahlog", "$loginCell")
+                        else -> Unit
                     }
                 })
     }

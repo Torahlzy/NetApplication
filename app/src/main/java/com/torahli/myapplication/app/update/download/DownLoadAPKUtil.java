@@ -35,8 +35,6 @@ import okio.BufferedSource;
 import okio.Okio;
 
 public class DownLoadAPKUtil {
-    private static final String TAG = "update";
-
     public interface IView {
         Activity getActivity();
 
@@ -70,12 +68,7 @@ public class DownLoadAPKUtil {
                     @Override
                     public void onNext(String str) {
                         if (!TextUtils.isEmpty(str)) {
-                            if (Tlog.isShowLogCat()) {
-                                Tlog.d(TAG, "onNext --- str:" + str);
-                            }
                             onDownloadFinish(str, update, view);
-                        } else if (Tlog.isShowLogCat()) {
-                            Tlog.d(TAG, "onNext --- 保存文件失败");
                         }
                     }
 

@@ -16,7 +16,6 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.target.DrawableImageViewTarget;
 import com.torahli.myapplication.R;
-import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.util.SystemUtil;
 import com.torahli.myapplication.hkbc.NavigationUtil;
 import com.torahli.myapplication.hkbc.databean.TextTopic;
@@ -128,13 +127,9 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private void jumpTopicListPage(Topic entity) {
         if (entity instanceof TextTopic) {
             //打开文字列表样式的页面
-            Tlog.i("页面跳转", "【点击】首页的文字主题条目 → 打开文字列表页 TextTitleListFragment，title="
-                    + entity.getTitle() + "，link=" + entity.getLink());
             NavigationUtil.startTextTopicList(homePageFragment, entity.getLink(), entity.getTitle());
         } else {
             //跳转"带预览图样式列表"页
-            Tlog.i("页面跳转", "【点击】首页的带图主题条目 → 打开图文列表页 TopicListFragment，title="
-                    + entity.getTitle() + "，link=" + entity.getLink());
             NavigationUtil.startPicTopicList(homePageFragment, entity.getLink(), entity.getTitle());
         }
     }
@@ -143,8 +138,6 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
      * 跳转主题详情（图片内容页）
      */
     private void jumpTopicContentPage(Topic link) {
-        Tlog.i("页面跳转", "【点击】首页轮播图 → 打开图片内容页，title="
-                + link.getTitle() + "，link=" + link.getLink());
         NavigationUtil.startPicContent(homePageFragment.getActivity(), link);
     }
 

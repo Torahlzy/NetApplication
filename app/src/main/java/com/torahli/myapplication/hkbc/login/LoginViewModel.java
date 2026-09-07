@@ -57,9 +57,6 @@ public class LoginViewModel extends BaseViewModel {
         }).observeOn(AndroidSchedulers.mainThread()).subscribe(new DefaultSubscriber<LoginResult>() {
             @Override
             public void onNext(LoginResult result) {
-                if (Tlog.isShowLogCat()) {
-                    Tlog.d(TAG, "onNext --- result:" + result);
-                }
                 loginResultLiveData.setValue(result);
                 if (result != null && result.isSucceed()) {
                     //保存账号密码，便于下次自动填充

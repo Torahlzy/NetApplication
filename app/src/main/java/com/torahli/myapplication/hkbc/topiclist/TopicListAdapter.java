@@ -116,8 +116,6 @@ public class TopicListAdapter extends RecyclerView.Adapter<TopicListAdapter.Hold
     }
 
     private void jumpToTopicContent(Topic topic) {
-        Tlog.i("页面跳转", "【点击】图文列表页 TopicListFragment 的条目 → 打开图片内容页，title="
-                + topic.getTitle() + "，link=" + topic.getLink());
         NavigationUtil.startPicContent(fragment.getActivity(), topic);
     }
 

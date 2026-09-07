@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.torahli.myapplication.R;
-import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.fragment.BaseFragment;
 import com.torahli.myapplication.hkbc.NavigationUtil;
 import com.torahli.myapplication.hkbc.databean.Topic;
@@ -73,8 +72,6 @@ public class TextListAdapter extends RecyclerView.Adapter<TextListAdapter.Holder
     }
 
     private void jumpToTopicContent(Topic topic) {
-        Tlog.i("页面跳转", "【点击】文字列表页 TextTitleListFragment 的条目 → 打开图片内容页，title="
-                + topic.getTitle() + "，link=" + topic.getLink());
         NavigationUtil.startPicContent(fragment.getActivity(), topic);
     }
 
