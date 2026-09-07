@@ -4,14 +4,14 @@
     android:layout_height="match_parent"
     android:paddingBottom="24dp">
 
-    <com.ajguan.library.EasyRefreshLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/hk_home_easyrefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/hk_home_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </com.ajguan.library.EasyRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>

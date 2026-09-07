@@ -1,12 +1,11 @@
 package com.torahli.myapplication.hkbc.databean;
 
-import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.torahli.myapplication.hkbc.home.ItemType;
 
 /**
  * 主题。该对象不只用在首页。用在非首页时，getItemType是没有指导意义的
  */
-public class Topic implements MultiItemEntity, ILink {
+public class Topic implements ILink {
     private String title;
     /**
      * 主题的跳转网址
@@ -74,7 +73,9 @@ public class Topic implements MultiItemEntity, ILink {
                 '}';
     }
 
-    @Override
+    /**
+     * 首页用来区分条目的显示/跳转类型，非首页无指导意义
+     */
     public int getItemType() {
         return ItemType.PicTopicList;
     }

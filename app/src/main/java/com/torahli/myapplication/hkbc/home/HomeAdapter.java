@@ -1,211 +1,294 @@
 package com.torahli.myapplication.hkbc.home;
 
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleObserver;
-import android.arch.lifecycle.OnLifecycleEvent;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
-import android.text.TextUtils;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.target.DrawableImageViewTarget;
-import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
-import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.torahli.myapplication.R;
-import com.torahli.myapplication.framwork.Tlog;
 import com.torahli.myapplication.framwork.util.SystemUtil;
 import com.torahli.myapplication.hkbc.NavigationUtil;
+import com.torahli.myapplication.hkbc.databean.TextTopic;
 import com.torahli.myapplication.hkbc.databean.Topic;
 import com.torahli.myapplication.hkbc.home.bean.Banners;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
-import com.torahli.myapplication.hkbc.support.BannerGlideImageLoader;
-import com.youth.banner.Banner;
-import com.youth.banner.BannerConfig;
-import com.youth.banner.listener.OnBannerListener;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
-public class HomeAdapter extends BaseMultiItemQuickAdapter<MultiItemEntity, BaseViewHolder>
-        implements LifecycleObserver {
+/**
+ * 首页列表：Banners（ViewPager2 轮播，代码控制高度与自动播放）+ Topic 条目
+ */
+public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private static final int TYPE_BANNERS = 1;
+    private static final int TYPE_TOPIC = 2;
+    private static final long AUTO_PLAY_INTERVAL = 3000L;
+
     @Nonnull
     private final RequestManager fragmentGlide;
     @Nonnull
     private final HomePageFragment homePageFragment;
     @Nonnull
-    private final List<WeakReference<Banner>> bannerViews = new ArrayList<>();
+    private final List<Object> data = new ArrayList<>();
+    @Nonnull
+    private final List<BannerHolder> bannerHolders = new ArrayList<>();
 
     public HomeAdapter(@Nonnull RequestManager fragmentGlide, HomePageFragment homePageFragment) {
-        super(null);
         this.fragmentGlide = fragmentGlide;
         this.homePageFragment = homePageFragment;
-        initType();
-        this.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                MultiItemEntity multiItemEntity = getData().get(position);
-                if (multiItemEntity.getItemType() == ItemType.PicTopicList) {
-                    jumpTopicListPage((Topic) multiItemEntity);
-                } else if (multiItemEntity.getItemType() == ItemType.TextTopic) {
-                    jumpTextTopicListPage((Topic) multiItemEntity);
-                } else {
-                    if (Tlog.isShowLogCat()) {
-                        Tlog.w(TAG, "onItemClick --- multiItemEntity:" + multiItemEntity);
-                    }
-                }
-            }
-        });
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    public void onResume() {
-        for (WeakReference<Banner> bannerView : bannerViews) {
-            Banner banner = bannerView.get();
-            if (banner != null && banner.isAttachedToWindow()) {
-                banner.startAutoPlay();
-            }
+    public void setNewData(@Nullable List<Object> newData) {
+        data.clear();
+        if (newData != null) {
+            data.addAll(newData);
         }
+        notifyDataSetChanged();
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    public void onPause() {
-        for (WeakReference<Banner> bannerView : bannerViews) {
-            Banner banner = bannerView.get();
-            if (banner != null) {
-                banner.stopAutoPlay();
-            }
+    /**
+     * 页面可见时，恢复轮播自动播放
+     */
+    public void onResume() {
+        for (BannerHolder holder : bannerHolders) {
+            holder.startAutoPlay();
         }
     }
 
     /**
-     * 缓存banner，方便生命周期时停止
-     *
-     * @param banner
+     * 页面不可见时，停止轮播自动播放
      */
-    private void addCacheBanner(Banner banner) {
-        boolean hasCached = false;
-        Iterator<WeakReference<Banner>> iterator = bannerViews.iterator();
+    public void onPause() {
+        Iterator<BannerHolder> iterator = bannerHolders.iterator();
         while (iterator.hasNext()) {
-            WeakReference<Banner> wrBanner = iterator.next();
-            Banner bannerTemp = wrBanner.get();
-            if (bannerTemp != null) {
-                if (bannerTemp == banner) {
-                    hasCached = true;
-                }
-            } else {
+            BannerHolder holder = iterator.next();
+            holder.stopAutoPlay();
+            if (holder.viewPager == null || !holder.viewPager.isAttachedToWindow()) {
                 iterator.remove();
             }
         }
-        if (!hasCached) {
-            bannerViews.add(new WeakReference<Banner>(banner));
-        }
-    }
-
-    /**
-     * 跳转主题列表
-     *
-     * @param entity
-     */
-    private void jumpTopicListPage(Topic entity) {
-        NavigationUtil.startPicTopicList(
-                homePageFragment, entity.getLink(), entity.getTitle());
-    }
-
-    /**
-     * 打开文字列表样式的页面
-     *
-     * @param entity
-     */
-    private void jumpTextTopicListPage(Topic entity) {
-        NavigationUtil.startTextTopicList(
-                homePageFragment, entity.getLink(), entity.getTitle());
-    }
-
-    private void initType() {
-        addItemType(ItemType.Banners, R.layout.fragment_hk_item_banners);
-        addItemType(ItemType.PicTopicList, R.layout.fragment_hk_item_topic);
-        addItemType(ItemType.TextTopic, R.layout.fragment_hk_item_topic);
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, MultiItemEntity item) {
-        switch (item.getItemType()) {
-            case ItemType.Banners:
-                Banners banners = (Banners) item;
-                convertForBanners(helper, banners);
-                break;
-            case ItemType.PicTopicList:
-                Topic topic = (Topic) item;
-                convertForTopic(helper, topic);
-                break;
-            case ItemType.TextTopic:
-                Topic customTopic = (Topic) item;
-                convertForTopic(helper, customTopic);
-                break;
-            default:
-                break;
+    public int getItemViewType(int position) {
+        Object item = data.get(position);
+        return item instanceof Banners ? TYPE_BANNERS : TYPE_TOPIC;
+    }
+
+    @NonNull
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == TYPE_BANNERS) {
+            View view = View.inflate(parent.getContext(), R.layout.fragment_hk_item_banners, null);
+            return new BannerHolder(view);
+        }
+        View view = View.inflate(parent.getContext(), R.layout.fragment_hk_item_topic, null);
+        return new TopicHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        Object item = data.get(position);
+        if (holder instanceof BannerHolder) {
+            ((BannerHolder) holder).bind((Banners) item);
+        } else if (holder instanceof TopicHolder) {
+            ((TopicHolder) holder).bind((Topic) item);
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return data.size();
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
+        if (holder instanceof BannerHolder) {
+            ((BannerHolder) holder).stopAutoPlay();
+            bannerHolders.remove(holder);
+        }
+        super.onViewRecycled(holder);
+    }
+
+    private void jumpTopicListPage(Topic entity) {
+        if (entity instanceof TextTopic) {
+            //打开文字列表样式的页面
+            NavigationUtil.startTextTopicList(homePageFragment, entity.getLink(), entity.getTitle());
+        } else {
+            //跳转"带预览图样式列表"页
+            NavigationUtil.startPicTopicList(homePageFragment, entity.getLink(), entity.getTitle());
         }
     }
 
     /**
-     * 跳转主题详情
-     *
-     * @param link
+     * 跳转主题详情（图片内容页）
      */
     private void jumpTopicContentPage(Topic link) {
-        if (Tlog.isShowLogCat()) {
-            Tlog.i(TAG, "准备打开 --- link:" + link);
-        }
         NavigationUtil.startPicContent(homePageFragment.getActivity(), link);
     }
 
-    private void convertForBanners(BaseViewHolder helper, final Banners bannerData) {
-        final Banner banner = helper.getView(R.id.hk_home_item_banner);
-        addCacheBanner(banner);
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) banner.getLayoutParams();
-        layoutParams.height = SystemUtil.getWrapHeightForMatchWidth(
-                //根据网络图片计算出来的比例
-                SystemUtil.getScreenWidth(homePageFragment.getActivity()), 1.29139f);
-        //https://github.com/youth5201314/banner
-        banner.setImages(bannerData.getTopicList())
-                .setBannerTitles(bannerData.getTopicListTitle())
-                .setBannerStyle(BannerConfig.NUM_INDICATOR_TITLE)
-                .setImageLoader(new BannerGlideImageLoader())
-                .setDelayTime(3000)
-                .start();
-        banner.setOnBannerListener(new OnBannerListener() {
-            @Override
-            public void OnBannerClick(int position) {
-                List<Topic> topicList = bannerData.getTopicList();
-                Topic topic = topicList.get(position);
-                jumpTopicContentPage(topic);
-            }
-        });
-    }
+    class TopicHolder extends RecyclerView.ViewHolder {
+        private final TextView titleView;
+        private final ImageView coverView;
+        private Topic topic;
 
-    private void convertForTopic(BaseViewHolder helper, Topic topic) {
-        helper.setText(R.id.hk_tv_title, topic.getTitle());
-        final ImageView cover = helper.getView(R.id.hk_iv_title_img);
-        if (TextUtils.isEmpty(topic.getPicUrl())) {
-            cover.setVisibility(View.GONE);
-        } else {
-            cover.setVisibility(View.VISIBLE);
-            fragmentGlide.load(HKBCProtocolUtil.getWholeUrl(topic.getPicUrl())).into(new DrawableImageViewTarget(cover) {
+        TopicHolder(@NonNull View itemView) {
+            super(itemView);
+            titleView = itemView.findViewById(R.id.hk_tv_title);
+            coverView = itemView.findViewById(R.id.hk_iv_title_img);
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                    super.onLoadFailed(errorDrawable);
-                    cover.setVisibility(View.GONE);
+                public void onClick(View v) {
+                    if (topic != null) {
+                        jumpTopicListPage(topic);
+                    }
                 }
             });
+        }
+
+        void bind(final Topic topic) {
+            this.topic = topic;
+            titleView.setText(topic.getTitle());
+            if (topic.getPicUrl() == null || topic.getPicUrl().isEmpty()) {
+                coverView.setVisibility(View.GONE);
+            } else {
+                coverView.setVisibility(View.VISIBLE);
+                fragmentGlide.load(HKBCProtocolUtil.getWholeUrl(topic.getPicUrl()))
+                        .into(new DrawableImageViewTarget(coverView) {
+                            @Override
+                            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                                super.onLoadFailed(errorDrawable);
+                                coverView.setVisibility(View.GONE);
+                            }
+                        });
+            }
+        }
+    }
+
+    /**
+     * 轮播条目：ViewPager2 + Glide，代码控制高度，附自动播放
+     */
+    class BannerHolder extends RecyclerView.ViewHolder {
+        final ViewPager2 viewPager;
+        final TextView indicatorView;
+        private final Handler handler = new Handler(Looper.getMainLooper());
+        private final Runnable autoPlayTask = new Runnable() {
+            @Override
+            public void run() {
+                if (viewPager == null || !viewPager.isAttachedToWindow()) {
+                    return;
+                }
+                int count = viewPager.getAdapter() == null ? 0 : viewPager.getAdapter().getItemCount();
+                if (count > 1) {
+                    viewPager.setCurrentItem((viewPager.getCurrentItem() + 1) % count, true);
+                }
+                handler.postDelayed(this, AUTO_PLAY_INTERVAL);
+            }
+        };
+        private List<Topic> topics = new ArrayList<>();
+        @SuppressWarnings("unused")
+        private Banners banners;
+
+        BannerHolder(@NonNull View itemView) {
+            super(itemView);
+            viewPager = itemView.findViewById(R.id.hk_home_item_banner);
+            indicatorView = itemView.findViewById(R.id.hk_banner_indicator);
+            viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+                @Override
+                public void onPageSelected(int position) {
+                    updateIndicator(position);
+                }
+            });
+            viewPager.setAdapter(new RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+                @NonNull
+                @Override
+                public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                    ImageView imageView = new ImageView(parent.getContext());
+                    imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                    imageView.setLayoutParams(lp);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Object tag = v.getTag();
+                            if (tag instanceof Topic) {
+                                jumpTopicContentPage((Topic) tag);
+                            }
+                        }
+                    });
+                    return new RecyclerView.ViewHolder(imageView) {
+                    };
+                }
+
+                @Override
+                public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+                    Topic topic = topics.get(position);
+                    ImageView imageView = (ImageView) holder.itemView;
+                    imageView.setTag(topic);
+                    fragmentGlide.load(HKBCProtocolUtil.getWholeUrl(topic.getPicUrl())).into(imageView);
+                }
+
+                @Override
+                public int getItemCount() {
+                    return topics.size();
+                }
+            });
+        }
+
+        void bind(Banners banners) {
+            this.banners = banners;
+            this.topics = banners.getTopicList();
+            //根据网络图片计算出来的比例
+            ViewGroup.LayoutParams lp = itemView.getLayoutParams();
+            if (lp == null) {
+                lp = new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            }
+            lp.height = SystemUtil.getWrapHeightForMatchWidth(
+                    SystemUtil.getScreenWidth(homePageFragment.getActivity()), 1.29139f);
+            itemView.setLayoutParams(lp);
+            viewPager.getAdapter().notifyDataSetChanged();
+            updateIndicator(0);
+            if (!bannerHolders.contains(this)) {
+                bannerHolders.add(this);
+            }
+            startAutoPlay();
+        }
+
+        void updateIndicator(int position) {
+            if (indicatorView == null || topics == null || topics.isEmpty()) {
+                return;
+            }
+            int index = Math.max(0, Math.min(position, topics.size() - 1));
+            String title = topics.get(index).getTitle();
+            indicatorView.setText((index + 1) + "/" + topics.size() + " · " + title);
+        }
+
+        void startAutoPlay() {
+            if (topics == null || topics.size() <= 1) {
+                return;
+            }
+            handler.removeCallbacks(autoPlayTask);
+            handler.postDelayed(autoPlayTask, AUTO_PLAY_INTERVAL);
+        }
+
+        void stopAutoPlay() {
+            handler.removeCallbacks(autoPlayTask);
         }
     }
 }

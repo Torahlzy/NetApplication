@@ -1,9 +1,6 @@
 # Add project specific ProGuard rules here.
 # You can control the set of applied configuration files using the
 # proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
 
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
@@ -19,7 +16,6 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
--keep class com.umeng.commonsdk.** {*;}
 -keepclassmembers class * {
    public <init> (org.json.JSONObject);
 }
@@ -36,21 +32,14 @@ public static final int *;
   **[] $VALUES;
   public *;
 }
-# banner 的混淆代码
--keep class com.youth.banner.** {
-    *;
- }
 
 # for DexGuard only
 -keepresourcexmlelements manifest/application/meta-data@value=GlideModule
 #gson
--keep class me.jessyan.progressmanager.** { *; }
--keep interface me.jessyan.progressmanager.** { *; }
-#okio
--dontwarn okio.**
-
 -keep public class com.google.gson.**
 -keep public class com.google.gson.** {public private protected *;}
+#okio
+-dontwarn okio.**
 
 -keepattributes Signature
 -keepattributes *Annotation*

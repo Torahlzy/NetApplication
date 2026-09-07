@@ -1,17 +1,18 @@
 package com.torahli.myapplication.hkbc.topiccontent;
 
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.PagerAdapter;
 
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.target.DrawableImageViewTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.torahli.myapplication.R;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
@@ -20,10 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-
-import me.jessyan.progressmanager.ProgressListener;
-import me.jessyan.progressmanager.ProgressManager;
-import me.jessyan.progressmanager.body.ProgressInfo;
 
 public class PhotoViewPagerAdapter extends PagerAdapter {
     public static final String TAG = "PhotoViewPagerAdapter";
@@ -72,26 +69,9 @@ public class PhotoViewPagerAdapter extends PagerAdapter {
         View pagerPhotoView = layoutInflater.inflate(R.layout.pager_photoview, container, false);
         container.addView(pagerPhotoView);
         final PhotoView photoView = pagerPhotoView.findViewById(R.id.photoview_photo);
-        final NumberProgressBar progressBar = pagerPhotoView.findViewById(R.id.pb_photo_load_progress);
+        final ProgressBar progressBar = pagerPhotoView.findViewById(R.id.pb_photo_load_progress);
         String url = HKBCProtocolUtil.getWholeUrl(mData.get(position));
         progressBar.setVisibility(View.VISIBLE);
-        // Glide 下载监听
-        ProgressManager.getInstance().addResponseListener(url, new ProgressListener() {
-            @Override
-            public void onProgress(ProgressInfo progressInfo) {
-                int progress = (int) (progressInfo.getCurrentbytes() * 100 / progressInfo.getContentLength());
-                progressBar.setMax(100);
-                progressBar.setProgress(progress);
-                if (progressInfo.isFinish()) {
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onError(long id, Exception e) {
-                progressBar.setVisibility(View.GONE);
-            }
-        });
         //glide加载
         activityGlide.load(url).into(new DrawableImageViewTarget(photoView) {
             @Override

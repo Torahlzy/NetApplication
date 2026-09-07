@@ -1,22 +1,17 @@
 package com.torahli.myapplication.hkbc.setting.sethost;
 
 import android.app.Activity;
-import android.os.Handler;
-import android.os.Looper;
-import android.support.annotation.NonNull;
-import android.text.Editable;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.widget.EditText;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.f2prateek.rx.preferences2.RxSharedPreferences;
+import androidx.appcompat.app.AlertDialog;
+
 import com.torahli.myapplication.MainApplication;
 import com.torahli.myapplication.app.sharedpreferences.SharedPrefsKey;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
-
-import io.reactivex.Flowable;
-import io.reactivex.schedulers.Schedulers;
 
 public class SetUrlDialogHelper {
     public interface IView {
@@ -31,39 +26,44 @@ public class SetUrlDialogHelper {
     }
 
     public static void showSetUrlDialog(final IView view) {
-        final RxSharedPreferences rxPreferences = MainApplication.getApplication().getRxPreferences();
-        new MaterialDialog.Builder(view.getActivity())
-                .title("设置域名")
-                .content("初始使用必须设置域名，若不知道域名，去获得app的地方找")
-                .inputType(InputType.TYPE_CLASS_TEXT)
-                .input("exp:http://www.baidu.com/", HKBCProtocolUtil.BASEURL, new MaterialDialog.InputCallback() {
+        final Activity activity = view.getActivity();
+        final EditText editText = new EditText(activity);
+        editText.setInputType(InputType.TYPE_CLASS_TEXT);
+        editText.setHint("exp:http://www.baidu.com/");
+        if (!TextUtils.isEmpty(HKBCProtocolUtil.BASEURL)) {
+            editText.setText(HKBCProtocolUtil.BASEURL);
+        }
+
+        final AlertDialog dialog = new AlertDialog.Builder(activity)
+                .setTitle("设置域名")
+                .setMessage("初始使用必须设置域名，若不知道域名，去获得app的地方找")
+                .setView(editText)
+                .setPositiveButton("确定", null)
+                .setNegativeButton("取消", null)
+                .create();
+        //替换默认的确定按钮行为：校验通过才保存并关闭
+        dialog.setOnShowListener(new android.content.DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(android.content.DialogInterface d) {
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new android.view.View.OnClickListener() {
                     @Override
-                    public void onInput(MaterialDialog dialog, CharSequence input) {
-                    }
-                })
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        Editable text = dialog.getInputEditText().getText();
-                        String url = checkHost(String.valueOf(text));
+                    public void onClick(android.view.View v) {
+                        String url = checkHost(String.valueOf(editText.getText()));
                         view.showToast(url);
                         if (!TextUtils.isEmpty(url)) {
-                            Flowable.just(url)
-                                    .subscribeOn(Schedulers.io())
-                                    .subscribe(rxPreferences.getString(SharedPrefsKey.hostUrl).asConsumer());
+                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainApplication.getApplication());
+                            preferences.edit().putString(SharedPrefsKey.hostUrl, url).apply();
                             HKBCProtocolUtil.BASEURL = url;
                             view.onHostSetted();
+                            dialog.dismiss();
                         } else {
                             view.showToast("网址填写错误");
-                            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    showSetUrlDialog(view);
-                                }
-                            }, 1000);
                         }
                     }
-                }).show();
+                });
+            }
+        });
+        dialog.show();
     }
 
     /**
@@ -77,8 +77,7 @@ public class SetUrlDialogHelper {
             return "";
         }
         String s = String.valueOf(text).toLowerCase();
-        if (s.startsWith("http")) {
-        } else {
+        if (!s.startsWith("http")) {
             s = "http://" + s;
         }
 

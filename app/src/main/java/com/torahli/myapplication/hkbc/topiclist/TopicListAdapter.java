@@ -3,11 +3,11 @@ package com.torahli.myapplication.hkbc.topiclist;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.torahli.myapplication.R;
 import com.torahli.myapplication.framwork.GlideApp;
 import com.torahli.myapplication.framwork.Tlog;
@@ -17,40 +17,86 @@ import com.torahli.myapplication.hkbc.NavigationUtil;
 import com.torahli.myapplication.hkbc.databean.Topic;
 import com.torahli.myapplication.hkbc.net.HKBCProtocolUtil;
 
-public class TopicListAdapter extends BaseQuickAdapter<Topic, BaseViewHolder> {
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 原生 RecyclerView.Adapter（替代原 BaseRecyclerViewAdapterHelper）
+ */
+public class TopicListAdapter extends RecyclerView.Adapter<TopicListAdapter.Holder> {
     private final BaseFragment fragment;
+    private final List<Topic> data = new ArrayList<>();
 
     public TopicListAdapter(BaseFragment fragment) {
-        super(R.layout.fragment_topic_list_item, null);
         this.fragment = fragment;
-        setOnItemClickListener(new OnItemClickListener() {
+    }
+
+    public void setNewData(List<Topic> topics) {
+        data.clear();
+        if (topics != null) {
+            data.addAll(topics);
+        }
+        notifyDataSetChanged();
+    }
+
+    public void addData(List<Topic> topics) {
+        int start = data.size();
+        if (topics != null) {
+            data.addAll(topics);
+        }
+        notifyItemRangeInserted(start, data.size() - start);
+    }
+
+    @NonNull
+    @Override
+    public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = View.inflate(parent.getContext(), R.layout.fragment_topic_list_item, null);
+        return new Holder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull final Holder holder, int position) {
+        Topic item = data.get(position);
+        ViewGroup.LayoutParams layoutParams = holder.img.getLayoutParams();
+        layoutParams.width = SystemUtil.getScreenWidth(fragment.getActivity()) / 2
+                - SystemUtil.dp2px(8);
+        holder.img.setLayoutParams(layoutParams);
+        GlideApp.with(fragment)
+                .load(HKBCProtocolUtil.getWholeUrl(item.getPicUrl()))
+                .error(R.drawable.ic_common_fail_svg)
+                .into(holder.img);
+        holder.tv.setText(item.getTitle());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                Topic topic = getData().get(position);
-                jumpToTopicContent(topic);
+            public void onClick(View v) {
+                int pos = holder.getBindingAdapterPosition();
+                if (pos >= 0 && pos < data.size()) {
+                    jumpToTopicContent(data.get(pos));
+                }
             }
         });
     }
 
+    @Override
+    public int getItemCount() {
+        return data.size();
+    }
+
     private void jumpToTopicContent(Topic topic) {
         if (Tlog.isShowLogCat()) {
-            Tlog.i(TAG, "准备打开主题列表--- topic:" + topic);
+            Tlog.i("TopicListAdapter", "准备打开主题列表--- topic:" + topic);
         }
         NavigationUtil.startPicContent(fragment.getActivity(), topic);
     }
 
-    @Override
-    protected void convert(BaseViewHolder helper, Topic item) {
-        ImageView img = helper.getView(R.id.topic_list_item_img);
-        ViewGroup.LayoutParams layoutParams = (LinearLayout.LayoutParams) img.getLayoutParams();
-        layoutParams.width = SystemUtil.getScreenWidth(fragment.getActivity()) / 2
-                - SystemUtil.dp2px(8);
-        img.setLayoutParams(layoutParams);
-        TextView tv = helper.getView(R.id.topic_list_item_tv);
-        GlideApp.with(fragment)
-                .load(HKBCProtocolUtil.getWholeUrl(item.getPicUrl()))
-                .error(R.drawable.ic_common_fail_svg)
-                .into(img);
-        tv.setText(item.getTitle());
+    static class Holder extends RecyclerView.ViewHolder {
+        final ImageView img;
+        final TextView tv;
+
+        Holder(@NonNull View itemView) {
+            super(itemView);
+            img = itemView.findViewById(R.id.topic_list_item_img);
+            tv = itemView.findViewById(R.id.topic_list_item_tv);
+        }
     }
 }

@@ -2,14 +2,11 @@ package com.torahli.myapplication.hkbc.login;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -21,15 +18,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.f2prateek.rx.preferences2.RxSharedPreferences;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.torahli.myapplication.MainApplication;
 import com.torahli.myapplication.R;
 import com.torahli.myapplication.app.sharedpreferences.SharedPrefsKey;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
 import com.torahli.myapplication.hkbc.login.bean.LoginResult;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.observers.DefaultObserver;
 
 /**
  * A login screen that offers login via email/password.
@@ -72,44 +69,16 @@ public class LoginActivity extends BaseActivity {
             }
         });
 
+        //填充上次保存的账号密码
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainApplication.getApplication());
-        RxSharedPreferences rxPreferences = RxSharedPreferences.create(preferences);
-        rxPreferences.getString(SharedPrefsKey.username, "").asObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultObserver<String>() {
-                    @Override
-                    public void onNext(String s) {
-                        mEmailView.setText(s);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-        rxPreferences.getString(SharedPrefsKey.password, "").asObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultObserver<String>() {
-                    @Override
-                    public void onNext(String s) {
-                        mPasswordView.setText(s);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+        String savedUsername = preferences.getString(SharedPrefsKey.username, "");
+        String savedPassword = preferences.getString(SharedPrefsKey.password, "");
+        if (!TextUtils.isEmpty(savedUsername)) {
+            mEmailView.setText(savedUsername);
+        }
+        if (!TextUtils.isEmpty(savedPassword)) {
+            mPasswordView.setText(savedPassword);
+        }
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -122,7 +91,7 @@ public class LoginActivity extends BaseActivity {
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
+        loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         loginViewModel.getLoginResultLiveData().observe(this, new Observer<LoginResult>() {
             @Override
             public void onChanged(@Nullable LoginResult result) {
@@ -199,9 +168,6 @@ public class LoginActivity extends BaseActivity {
      * Shows the progress UI and hides the login form.
      */
     private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
         mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
@@ -226,4 +192,3 @@ public class LoginActivity extends BaseActivity {
 
 
 }
-

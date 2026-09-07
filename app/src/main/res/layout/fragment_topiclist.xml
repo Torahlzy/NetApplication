@@ -6,16 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".hkbc.topiclist.TopicListFragment">
 
-    <com.ajguan.library.EasyRefreshLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/hk_topiclist_easyrefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rl_topiclist"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        </android.support.v7.widget.RecyclerView>
-    </com.ajguan.library.EasyRefreshLayout>
+        </androidx.recyclerview.widget.RecyclerView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </RelativeLayout>

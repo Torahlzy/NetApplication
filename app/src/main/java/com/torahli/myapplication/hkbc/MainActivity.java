@@ -2,23 +2,10 @@ package com.torahli.myapplication.hkbc;
 
 import android.Manifest;
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.NavigationView.OnNavigationItemSelectedListener;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.DrawerLayout.DrawerListener;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,7 +14,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tbruyelle.rxpermissions2.RxPermissions;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringDef;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.torahli.myapplication.R;
 import com.torahli.myapplication.app.update.CheckUpdateViewModel;
 import com.torahli.myapplication.app.update.bean.UpdateInfo;
@@ -48,23 +48,21 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import io.reactivex.observers.DefaultObserver;
-
 /**
  * 主Activity
  *
  * @author torah
  */
 public class MainActivity extends BaseActivity
-        implements OnNavigationItemSelectedListener, DownLoadAPKUtil.IView {
+        implements NavigationView.OnNavigationItemSelectedListener, DownLoadAPKUtil.IView {
 
     public static final int INSTALL_PACKAGES_REQUESTCODE = 110;
     public static final int ACTION_MANAGE_UNKNOWN_APP_SOURCES = 111;
+    private static final int REQUEST_WRITE_STORAGE = 112;
     private CheckUpdateViewModel checkUpdateViewModel;
     private View fab;
     private boolean hasLogin;
     private long preClickTimeMills;
-    private RxPermissions rxPermissions;
     private DownLoadAPKUtil downLoadAPKUtil;
 
     @Override
@@ -96,32 +94,18 @@ public class MainActivity extends BaseActivity
     }
 
     private void initPermission() {
-        rxPermissions = new RxPermissions(this);
-        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .subscribe(new DefaultObserver<Boolean>() {
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        if (!aBoolean) {
-                            Toast.makeText(MainActivity.this, "无存储卡权限将不能自动升级", Toast.LENGTH_SHORT).show();
-                        } else {
-                            checkUpdate();
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            checkUpdate();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    REQUEST_WRITE_STORAGE);
+        }
     }
 
     private void checkUpdate() {
-        checkUpdateViewModel = ViewModelProviders.of(this).get(CheckUpdateViewModel.class);
+        checkUpdateViewModel = new ViewModelProvider(this).get(CheckUpdateViewModel.class);
         checkUpdateViewModel.getContentLiveData().observe(this, new Observer<UpdateInfo>() {
             @Override
             public void onChanged(@Nullable UpdateInfo updateInfo) {
@@ -157,6 +141,13 @@ public class MainActivity extends BaseActivity
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
+            case REQUEST_WRITE_STORAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    checkUpdate();
+                } else {
+                    Toast.makeText(MainActivity.this, "无存储卡权限将不能自动升级", Toast.LENGTH_SHORT).show();
+                }
+                break;
             case INSTALL_PACKAGES_REQUESTCODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     downLoadAPKUtil.continueInstall(this);
@@ -195,7 +186,7 @@ public class MainActivity extends BaseActivity
         drawer = (DrawerLayout) this.findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolBar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener((DrawerListener) toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         navView = (NavigationView) this.findViewById(R.id.nav_view);
@@ -207,9 +198,9 @@ public class MainActivity extends BaseActivity
         final ImageView headImage = (ImageView) headerView.findViewById(R.id.head_image);
         final TextView userName = (TextView) headerView.findViewById(R.id.head_title);
         final TextView userContent = (TextView) headerView.findViewById(R.id.head_content);
-        headImage.setOnClickListener((OnClickListener) (new OnClickListener() {
+        headImage.setOnClickListener(new OnClickListener() {
             @Override
-            public final void onClick(View it) {
+            public void onClick(View it) {
                 if (hasLogin) {
                     if (System.currentTimeMillis() - preClickTimeMills < 500) {
                         LoginActivity.startLoginActivity(MainActivity.this);
@@ -222,7 +213,7 @@ public class MainActivity extends BaseActivity
                     LoginActivity.startLoginActivity(MainActivity.this);
                 }
             }
-        }));
+        });
         UserInfoManager.getInstance().getUserInfoLiveData()
                 .observe(this, new Observer<UserInfo>() {
                     @Override
@@ -279,12 +270,10 @@ public class MainActivity extends BaseActivity
      */
     @Override
     public boolean onOptionsItemSelected(@NotNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.action_settings) {
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -295,17 +284,13 @@ public class MainActivity extends BaseActivity
      */
     @Override
     public boolean onNavigationItemSelected(@NotNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.nav_camera:
-
-                drawer.closeDrawer(GravityCompat.START);
-                break;
-            case R.id.nav_setting:
-                SettingsActivity.startSettingActivity(this);
-                drawer.closeDrawer(GravityCompat.START);
-                break;
-            default:
-                drawer.closeDrawer(GravityCompat.START);
+        if (item.getItemId() == R.id.nav_camera) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else if (item.getItemId() == R.id.nav_setting) {
+            SettingsActivity.startSettingActivity(this);
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            drawer.closeDrawer(GravityCompat.START);
         }
         return true;
     }

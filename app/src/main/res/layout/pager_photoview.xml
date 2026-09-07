@@ -4,17 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/photoview_photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:src="@drawable/ic_image_defaltphoto_24dp" />
 
-    <com.daimajia.numberprogressbar.NumberProgressBar
+    <!-- 图片加载中的旋转进度（替代原 NumberProgressBar + ProgressManager 逐字节进度） -->
+    <ProgressBar
         android:id="@+id/pb_photo_load_progress"
-        style="@style/NumberProgressBar_Default"
-        android:layout_marginTop="8dp" />
-
-
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
 </RelativeLayout>

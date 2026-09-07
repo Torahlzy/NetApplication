@@ -1,6 +1,6 @@
 package com.torahli.myapplication.hkbc.topiclist.texttitle;
 
-import android.arch.lifecycle.MutableLiveData;
+import androidx.lifecycle.MutableLiveData;
 import android.text.TextUtils;
 
 import com.torahli.myapplication.framwork.Tlog;

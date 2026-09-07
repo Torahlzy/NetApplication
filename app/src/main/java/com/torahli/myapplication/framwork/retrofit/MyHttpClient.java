@@ -11,7 +11,6 @@ import com.torahli.myapplication.BuildConfig;
 
 import java.util.concurrent.TimeUnit;
 
-import me.jessyan.progressmanager.ProgressManager;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 
@@ -35,16 +34,11 @@ public class MyHttpClient {
                 .cookieJar(cookieJar);
         if (BuildConfig.DEBUG) {
             builder.addNetworkInterceptor(new StethoInterceptor());//todo 查看效果
-//            .addInterceptor(LoggerInterceptor("OK_HTTP"))
         }
-        // https://github.com/JessYanCoding/ProgressManager/blob/master/README-zh.md 进度监听功能
-        // 构建 OkHttpClient 时,将 OkHttpClient.Builder() 传入 with() 方法,进行初始化配置
-        OkHttpClient client = ProgressManager.getInstance().with(builder).build();
-        return client;
+        return builder.build();
     }
 
     public static OkHttpClient getGlideUsedClient(Context context) {
-        return ProgressManager.getInstance().with(new OkHttpClient.Builder())
-                .build();
+        return new OkHttpClient.Builder().build();
     }
 }

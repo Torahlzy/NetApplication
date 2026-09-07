@@ -1,10 +1,10 @@
 package com.torahli.myapplication.hkbc.login;
 
-import android.arch.lifecycle.MutableLiveData;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.f2prateek.rx.preferences2.RxSharedPreferences;
+import androidx.lifecycle.MutableLiveData;
+
 import com.torahli.myapplication.MainApplication;
 import com.torahli.myapplication.app.sharedpreferences.SharedPrefsKey;
 import com.torahli.myapplication.framwork.Tlog;
@@ -61,14 +61,14 @@ public class LoginViewModel extends BaseViewModel {
                     Tlog.d(TAG, "onNext --- result:" + result);
                 }
                 loginResultLiveData.setValue(result);
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainApplication.getApplication());
-                RxSharedPreferences rxPreferences = RxSharedPreferences.create(preferences);
-                Flowable.just(account)
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(rxPreferences.getString(SharedPrefsKey.username).asConsumer());
-                Flowable.just(password)
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(rxPreferences.getString(SharedPrefsKey.password).asConsumer());
+                if (result != null && result.isSucceed()) {
+                    //保存账号密码，便于下次自动填充
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainApplication.getApplication());
+                    preferences.edit()
+                            .putString(SharedPrefsKey.username, account)
+                            .putString(SharedPrefsKey.password, password)
+                            .apply();
+                }
             }
 
             @Override

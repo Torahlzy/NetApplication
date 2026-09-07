@@ -1,6 +1,5 @@
 package com.torahli.myapplication.hkbc.home.bean;
 
-import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.torahli.myapplication.hkbc.databean.Topic;
 import com.torahli.myapplication.hkbc.home.ItemType;
 
@@ -9,7 +8,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-public class Banners implements MultiItemEntity {
+public class Banners {
     @Nonnull
     private List<Topic> topicList = new ArrayList<>();
 
@@ -32,7 +31,6 @@ public class Banners implements MultiItemEntity {
         return titles;
     }
 
-    @Override
     public int getItemType() {
         return ItemType.Banners;
     }

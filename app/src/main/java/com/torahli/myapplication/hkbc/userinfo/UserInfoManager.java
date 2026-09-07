@@ -1,6 +1,6 @@
 package com.torahli.myapplication.hkbc.userinfo;
 
-import android.arch.lifecycle.MutableLiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.torahli.myapplication.hkbc.userinfo.bean.UserInfo;
 

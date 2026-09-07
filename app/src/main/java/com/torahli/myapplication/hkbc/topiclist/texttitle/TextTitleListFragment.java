@@ -1,18 +1,19 @@
 package com.torahli.myapplication.hkbc.topiclist.texttitle;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.ajguan.library.EasyRefreshLayout;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.torahli.myapplication.R;
 import com.torahli.myapplication.framwork.activity.BaseActivity;
 import com.torahli.myapplication.framwork.fragment.BaseFragment;
@@ -26,12 +27,13 @@ public class TextTitleListFragment extends BaseFragment {
     private String mLink;
     private RecyclerView mRecyclerView;
     private TextListAdapter adapter;
+    private LinearLayoutManager layoutManager;
     private TextTopicListViewModel topicListViewModel;
-    private EasyRefreshLayout refreshLayout;
+    private SwipeRefreshLayout refreshLayout;
     private String title;
+    private boolean loadingMore = false;
 
     public static TextTitleListFragment newInstance(BaseActivity activity, String link, String title) {
-
         TextTitleListFragment fragment = new TextTitleListFragment();
         Bundle bundle = new Bundle();
         bundle.putString(INTENT_LINK, link);
@@ -56,45 +58,52 @@ public class TextTitleListFragment extends BaseFragment {
 
     private void initViews(View view) {
         refreshLayout = view.findViewById(R.id.hk_topiclist_easyrefresh);
-        refreshLayout.addEasyEvent(new EasyRefreshLayout.EasyEvent() {
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onLoadMore() {
-                topicListViewModel.loadMore();
-            }
-
-            @Override
-            public void onRefreshing() {
+            public void onRefresh() {
                 topicListViewModel.initData(mLink);
             }
         });
 
         mRecyclerView = view.findViewById(R.id.rl_topiclist);
+        layoutManager = new LinearLayoutManager(getNoneNullActivity(), LinearLayoutManager.VERTICAL, false);
         adapter = new TextListAdapter(this);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getNoneNullActivity(), LinearLayoutManager.VERTICAL, false));
+        mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(adapter);
+        //滚动到底部时加载更多
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (loadingMore || refreshLayout.isRefreshing()) {
+                    return;
+                }
+                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                if (adapter.getItemCount() > 0 && lastVisibleItem >= adapter.getItemCount() - 3) {
+                    loadingMore = true;
+                    topicListViewModel.loadMore();
+                }
+            }
+        });
 
-        topicListViewModel = ViewModelProviders.of(this).get(TextTopicListViewModel.class);
+        topicListViewModel = new ViewModelProvider(this).get(TextTopicListViewModel.class);
         topicListViewModel.getTopicListLiveData().observe(this, new Observer<TopicList>() {
             @Override
             public void onChanged(@Nullable TopicList topicList) {
                 if (refreshLayout.isRefreshing()) {
-                    refreshLayout.refreshComplete();
+                    refreshLayout.setRefreshing(false);
                 }
 
                 if (topicList == null || topicList.isError()) {
-                    if (refreshLayout.isLoading()) {
-                        refreshLayout.loadMoreFail();
-                    }
+                    loadingMore = false;
                     Toast.makeText(getActivity(), "获取帖子列表失败", Toast.LENGTH_SHORT).show();
                 } else {
                     if (topicList.isInit()) {
                         adapter.setNewData(topicList.getTopicList());
                     } else {
                         adapter.addData(topicList.getTopicList());
-                        if (refreshLayout.isLoading()) {
-                            refreshLayout.loadMoreComplete();
-                        }
                     }
+                    loadingMore = false;
                     showTips("加载第" + topicList.getPageName() + "页成功");
                 }
             }
@@ -111,7 +120,6 @@ public class TextTitleListFragment extends BaseFragment {
             mLink = arguments.getString(INTENT_LINK);
         }
         title = arguments.getString(INTENT_TITLE);
-
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.torahli.myapplication.hkbc.home.bean;
 
-import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.torahli.myapplication.framwork.bean.BaseLiveData;
 import com.torahli.myapplication.framwork.bean.NetErrorType;
 import com.torahli.myapplication.hkbc.databean.Topic;
@@ -14,7 +13,7 @@ public class HomePage extends BaseLiveData {
     @Nonnull
     private List<Topic> topicList = new ArrayList<>();
 
-    private List<MultiItemEntity> customList = new ArrayList<>();
+    private List<Object> customList = new ArrayList<>();
 
     private Banners banners1;
 
@@ -29,11 +28,14 @@ public class HomePage extends BaseLiveData {
         return this;
     }
 
-    public List<MultiItemEntity> getAllData() {
+    /**
+     * 首页展示的数据：Banners（轮播）+ Topics + 自定义条目
+     */
+    public List<Object> getAllData() {
         if (isError()) {
             return null;
         }
-        List<MultiItemEntity> entityList = new ArrayList<>();
+        List<Object> entityList = new ArrayList<>();
         if (banners1 != null) {
             entityList.add(banners1);
         }
@@ -54,7 +56,7 @@ public class HomePage extends BaseLiveData {
         return this;
     }
 
-    public HomePage addCustomEntity(MultiItemEntity entity) {
+    public HomePage addCustomEntity(Object entity) {
         customList.add(entity);
         return this;
     }
