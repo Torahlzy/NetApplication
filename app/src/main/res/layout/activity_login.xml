@@ -2,6 +2,7 @@
 <!-- Android 15/16 强制 edge-to-edge 的机型上，系统标题栏会盖住内容顶部，
      账号输入框整个被遮住；这里顶部多留 100dp 空白把表单整体顶到标题栏下方 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -48,9 +49,13 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- endIconMode=password_toggle 在输入框右侧内置“小眼睛”查看按钮：
+                 点击可在明文/密文之间切换，图标样式与点击态由 Material 自动处理，
+                 比手动加 ImageView + 改 inputType 更美观、无光标跳动等问题 -->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:endIconMode="password_toggle">
 
                 <EditText
                     android:id="@+id/password"
