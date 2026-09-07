@@ -7,19 +7,14 @@
 一个针对特定论坛（HKBC）美化的"浏览器" Android App：不是直接展示网页，而是通过
 **抓取页面 HTML → 解析成数据 → 用原生 UI 重新渲染**，提供主页（Banner + 列表）、
 图文主题列表、内容页（横屏/竖屏看图）、登录、设置（可改站点域名）等能力。
-另有基于 GitHub raw 文件的"检查更新 + 下载 APK"逻辑。
 
-- 语言以 Java 为主，少量 Kotlin（如 `HomePageParser.kt`）。
+
+- 后续新增代码必须优先使用kt语言，除非更改的是旧的java类。
 - 注释、README 均为中文，提交信息为中文，请沿用。
 
 ## 技术栈（2026 已现代化）
 
-- 平台：Android（`compileSdk 37` / `minSdk 23` / `targetSdk 37`，**全 AndroidX**）
-- 构建：Gradle **9.6.0**（wrapper 走**腾讯镜像** `mirrors.cloud.tencent.com/gradle`）+
-  AGP **9.3.2**（9.3.x 是本机 Android Studio 支持的最高版本，勿升 9.4+），
-  Gradle daemon 固定运行于 JDK 21（见"环境与构建"）。
-  **Kotlin 由 AGP 9 内置编译**，会自动带上匹配的 `kotlin-stdlib` —— 不要显式锁 stdlib
-  版本（锁比内置编译器更新的版本会报元数据不兼容）。
+- 平台：Android
 - 架构：MVVM —— `androidx.lifecycle`（`lifecycle-viewmodel/livedata:2.11`）
 - 网络：Retrofit 3.0 + OkHttp 4.12 + RxJava 2（响应体为 `String` 原始 HTML）
 - 解析：jsoup 1.23 + Gson
@@ -32,28 +27,6 @@
 - 其他：PersistentCookieJar、Stetho、jsr305 + JetBrains annotations
 - 已移除：Support Library / android.arch / BRVAH / banner / EasyRefreshLayout /
   material-dialogs / NumberProgressBar / ProgressManager / RxPreferences / 友盟统计
-
-## 环境与构建
-
-- 需要 **JDK ≥ 17**、Android SDK（含 platform android-37、build-tools ≥36）。
-- Gradle daemon 的 JVM 由项目内 `gradle/gradle-daemon-jvm.properties` 固定为 **JDK 21**
-  （`toolchainVersion=21`）：本机已装 JDK 21 即可离线构建；若未安装，
-  `settings.gradle` 里的 foojay-resolver-convention 插件会尝试自动下载
-  （需能访问 `api.foojay.io`，国内网络不畅时请先装好本地 JDK 21）。
-  这两个文件是 Android Studio 迁移生成的，与 JDK 17 不冲突：**保留并提交，勿删**。
-  另外 `gradle.properties` 中的 `org.gradle.tooling.parallel=true` 为 Gradle 9.4+
-  并行 sync 开关，AS 自动加的，无害。
-- `local.properties` 指向本机 SDK，已被 `.gitignore` 忽略，不要提交。
-- 构建命令：
-  - `./gradlew :app:assembleDebug` — debug 包
-  - `./gradlew :app:assembleRelease` — release 包（`minifyEnabled false`）
-- 依赖仓库：google() / mavenCentral() / jitpack / 阿里云 jcenter 镜像
-  （`fragmentationx-core` 等老 artifact 只在镜像里）。
-- AGP 9 注意事项：
-  - `namespace` 在 `app/build.gradle` 声明，manifest 不再有 `package`。
-  - R 类字段默认非 final：**不要对 `R.id.*` 写 switch-case**，用 if/else。
-  - manifest 中带 intent-filter 的组件必须显式 `android:exported`。
-  - 老 `proguard-android.txt` 已被移除，用 `proguard-android-optimize.txt`。
 
 ## 代码结构
 
@@ -119,9 +92,7 @@ Retrofit 请求（Protocol 接口, 返回 Flowable<String> 原始HTML）
    `framwork` 下的 Base 类（继承而不是另起炉灶）。
 4. 常量/开关类放 `AppConfig`。
 5. 日志用 `Tlog`，遵循既有输出习惯；不要引入新日志体系。
-6. 保持中文注释；本仓库已现代化，**可放心升级依赖**，但 AGP 请保持在 9.3.x
-   （本机 Android Studio 上限）、不要显式锁 kotlin-stdlib 版本；改前先跑通
-   `:app:assembleDebug`。
+6. 保持中文注释；
 
 ## 常见任务指引
 
